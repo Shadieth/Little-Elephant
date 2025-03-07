@@ -1,9 +1,5 @@
 # Little Elephant
 
-**Little Elephant** es una aplicación móvil educativa diseñada para ayudar a los niños de primaria a aprender inglés de manera divertida y efectiva. La aplicación ofrece múltiples niveles de aprendizaje, donde los niños pueden explorar vocabulario de diferentes categorías, como animales, colores, alimentos y más.
-
-<img src="images/portada.png" alt="Portada" width="300"/>
-
 ## Descripción del Proyecto
 
 El proyecto consiste en el desarrollo de una aplicación móvil llamada **Little Elephant**, diseñada para el aprendizaje del inglés en niños con un enfoque en el vocabulario. La estructura de aprendizaje está inspirada en el modelo de **Duolingo**, donde los usuarios deberán desbloquear niveles progresivamente a medida que avanzan.
@@ -11,6 +7,8 @@ El proyecto consiste en el desarrollo de una aplicación móvil llamada **Little
 Inicialmente, la aplicación será exclusiva para dispositivos **Android**, con una interfaz desarrollada en **Android Studio**. Sin embargo, el **backend** se implementará de forma independiente para facilitar su integración con otras interfaces en el futuro, permitiendo una versión web y garantizando un sistema modular y escalable.
 
 Además, la aplicación estará disponible en **español e inglés** para mejorar la accesibilidad a usuarios con distintos niveles de conocimiento. También se integrará con la API de **Google Sign-In** para gestionar el inicio de sesión en Android. La administración de usuarios y niveles se manejará mediante una base de datos.
+
+<img src="images/portada.png" alt="Portada" width="300"/>
 
 ## Alcance
 
