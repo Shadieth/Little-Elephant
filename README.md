@@ -4,28 +4,52 @@
 
 <img src="images/portada.png" alt="Portada" width="300"/>
 
-## Idea de proyecto
+## Descripción del Proyecto
 
-- **Vocabulario por Niveles**: La app está dividida en 5 niveles temáticos que progresan en dificultad.
-- **Mini-juego Final**: Al final de cada nivel, los niños pueden disfrutar de un mini-juego tipo *Subway Surfers* para poner a prueba lo que han aprendido.
-- **Interfaz Atractiva**: La app tiene un diseño interactivo y amigable, pensado especialmente para niños, utilizando **Jetpack Compose**.
+El proyecto consiste en el desarrollo de una aplicación móvil llamada **Little Elephant**, diseñada para el aprendizaje del inglés en niños con un enfoque en el vocabulario. La estructura de aprendizaje está inspirada en el modelo de **Duolingo**, donde los usuarios deberán desbloquear niveles progresivamente a medida que avanzan.
+
+Inicialmente, la aplicación será exclusiva para dispositivos **Android**, con una interfaz desarrollada en **Android Studio**. Sin embargo, el **backend** se implementará de forma independiente para facilitar su integración con otras interfaces en el futuro, permitiendo una versión web y garantizando un sistema modular y escalable.
+
+Además, la aplicación estará disponible en **español e inglés** para mejorar la accesibilidad a usuarios con distintos niveles de conocimiento. También se integrará con la API de **Google Sign-In** para gestionar el inicio de sesión en Android. La administración de usuarios y niveles se manejará mediante una base de datos.
+
+## Alcance
+
+- Desarrollo de una interfaz gráfica intuitiva y atractiva.
+- Backend modular y escalable.
+- Integración con APIs externas para funcionalidades adicionales.
+- Implementación de **cinco niveles iniciales**.
+- Disponibilidad en **español e inglés**.
+
+## Resumen de Funcionalidades
+
+- Registro e inicio de sesión con **Google Sign-In** o mediante datos manuales.
+- Visualización de imágenes con selección de la palabra correcta en inglés.
+- Reproducción de sonidos para mejorar la pronunciación.
+- Seguimiento del progreso del usuario.
+- Interfaz adaptada para niños, con diseño amigable y colores llamativos.
+- Escalabilidad para agregar nuevos niveles y funcionalidades.
+- Opción para cambiar el idioma de la aplicación.
 
 <img src="images/crearCuenta.png" alt="Crear cuenta" width="300"/>
 
 <img src="images/crearCuenta1.png" alt="Crear cuenta con botón visible" width="300"/>
 
-## Tecnología
+## Tecnologías a Utilizar
 
-- **Jetpack Compose**: Utilizado para la creación de la interfaz de usuario.
-- **Room Database**: Se está utilizando Room para gestionar el almacenamiento local de los usuarios y sus progresos. 
-  - La base de datos **Room** estará configurada para almacenar el nombre, correo electrónico, número de accesos y fecha del último acceso de los usuarios.
+- **Frontend**: Android Studio con **Jetpack Compose**.
+- **Backend**: Node.js con **NestJS** y **TypeScript**.
+- **Base de Datos**: **MongoDB**.
+- **Autenticación**: Integración con **Google Sign-In**.
+- **Servicios Externos**: APIs para generación de sonidos.
+- **Infraestructura**: Arquitectura escalable y modular para futuras ampliaciones.
+
+<img src="images/niveles.png" alt="Pantalla de niveles" width="300"/>
 
 ## Estado Actual
 
 - **Frontend**: Actualmente, el frontend de la aplicación está completamente desarrollado con **Jetpack Compose**.
-- **Backend**: Aún no se ha implementado la parte del backend, aunque está planificado para el futuro.
-
-<img src="images/niveles.png" alt="Pantalla de niveles" width="300"/>
+- **Backend**: Se está implementando con **Node.js y NestJS**.
+- **Base de Datos**: Uso de **MongoDB** para almacenar información de usuarios y progreso.
 
 ## Instalación
 
