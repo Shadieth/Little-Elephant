@@ -2,8 +2,7 @@
 
 **Little Elephant** es una aplicación móvil educativa diseñada para ayudar a los niños de primaria a aprender inglés de manera divertida y efectiva. La aplicación ofrece múltiples niveles de aprendizaje, donde los niños pueden explorar vocabulario de diferentes categorías, como animales, colores, alimentos y más.
 
-![Portada](images/portada.png)
-*Imagen de la pantalla de inicio de la aplicación*
+<img src="images/portada.png" alt="Portada" width="300"/>
 
 ## Idea de proyecto
 
@@ -11,11 +10,9 @@
 - **Mini-juego Final**: Al final de cada nivel, los niños pueden disfrutar de un mini-juego tipo *Subway Surfers* para poner a prueba lo que han aprendido.
 - **Interfaz Atractiva**: La app tiene un diseño interactivo y amigable, pensado especialmente para niños, utilizando **Jetpack Compose**.
 
-![Crear cuenta](images/crearCuenta.png)
-*Imagen mostrando la pantalla de crear cuenta*
+<img src="images/crearCuenta.png" alt="Crear cuenta" width="300"/>
 
-![Crear cuenta](images/crearCuenta1.png)
-*Imagen mostrando la pantalla de crear cuenta, mostrando el botón que en la imagen anterior no se percibe*
+<img src="images/crearCuenta1.png" alt="Crear cuenta con botón visible" width="300"/>
 
 ## Tecnología
 
@@ -28,8 +25,7 @@
 - **Frontend**: Actualmente, el frontend de la aplicación está completamente desarrollado con **Jetpack Compose**.
 - **Backend**: Aún no se ha implementado la parte del backend, aunque está planificado para el futuro.
 
-![Niveles](images/niveles.png)
-*Pantalla de los niveles existentes*
+<img src="images/niveles.png" alt="Pantalla de niveles" width="300"/>
 
 ## Instalación
 
