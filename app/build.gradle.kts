@@ -65,6 +65,15 @@ dependencies {
     implementation(libs.androidx.material.icons.extended) // Añadido para los iconos de visibilidad
     implementation(libs.androidx.navigation.compose)
 
+    // Retrofit y Gson
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
+    implementation ("androidx.compose.runtime:runtime-livedata:1.4.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

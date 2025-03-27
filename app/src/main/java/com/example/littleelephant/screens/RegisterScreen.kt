@@ -24,8 +24,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.littleelephant.R
+import com.example.littleelephant.apiRest.RegisterRequest
+import com.example.littleelephant.apiRest.UserViewModel
+import androidx.compose.runtime.livedata.observeAsState
+
 
 // Colores reutilizables
 val BackgroundColor = Color(0xFFFACDDD)
@@ -35,6 +40,10 @@ val ButtonColor = Color(0xFFAE3251)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavHostController? = null) {
+
+    // Obtener la instancia de UserViewModel
+    val userViewModel: UserViewModel = viewModel()
+
     val context = LocalContext.current
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
@@ -43,6 +52,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
+
+    // Observar los resultados de LiveData desde el ViewModel
+    val registrationSuccess by userViewModel.registrationSuccess.observeAsState()
+    val registrationError by userViewModel.registrationError.observeAsState()
 
     Scaffold(
         topBar = {
@@ -125,7 +138,7 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .height(60.dp)
                         .background(Color(0xFFE5E0E8))
                 ) {
-                    val genderOptions = listOf("Masculino", "Femenino", "Otro")
+                    val genderOptions = listOf("male", "female", "other")
 
                     Row(
                         modifier = Modifier
@@ -214,25 +227,32 @@ fun RegisterScreen(navController: NavHostController? = null) {
                             selectedGender.isBlank() || email.isBlank() || password.isBlank() ||
                             confirmPassword.isBlank() || password != confirmPassword
                         ) {
-                            Toast.makeText(
-                                context,
-                                "Por favor, complete todos los campos correctamente.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, "Por favor, complete todos los campos correctamente.", Toast.LENGTH_SHORT).show()
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Cuenta creada para $firstName $lastName",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            val request = RegisterRequest(
+                                firstName = firstName,
+                                lastName = lastName,
+                                birthDate = birthDate,
+                                gender = selectedGender,
+                                email = email,
+                                password = password
+                            )
+                            userViewModel.registerUser(request)
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ButtonColor
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = ButtonColor)
                 ) {
                     Text("Crear Cuenta")
+                }
+
+                // Mostrar los mensajes de éxito o error
+                registrationSuccess?.let {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                }
+
+                registrationError?.let {
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 }
             }
         }
