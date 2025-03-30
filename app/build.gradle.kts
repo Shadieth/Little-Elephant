@@ -73,6 +73,9 @@ dependencies {
     implementation ("androidx.compose.runtime:runtime-livedata:1.4.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")
 
+    // Agregar la dependencia de Google Fonts
+    implementation ("androidx.compose.ui:ui-text-google-fonts:1.0.1")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

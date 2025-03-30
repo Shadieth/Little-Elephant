@@ -1,5 +1,6 @@
 package com.example.littleelephant.naviagtion
 
+import com.example.littleelephant.screens.RegistrationSuccessScreen
 import com.example.littleelephant.screens.SecondScreenLevels
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -24,6 +25,9 @@ fun AppNavigation() {
         }
         composable(AppScreens.PreferencesScreen.route) {
             PreferencesScreen(navController)
+        }
+        composable(AppScreens.RegistrationSuccess.route) {
+            RegistrationSuccessScreen(navController)
         }
     }
 }
