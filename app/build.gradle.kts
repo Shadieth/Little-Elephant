@@ -76,6 +76,8 @@ dependencies {
     // Agregar la dependencia de Google Fonts
     implementation ("androidx.compose.ui:ui-text-google-fonts:1.0.1")
 
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

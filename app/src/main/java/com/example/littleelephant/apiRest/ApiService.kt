@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+//Register request and response
 data class RegisterRequest(
     val firstName: String,
     val lastName: String,
@@ -21,7 +22,22 @@ data class RegisterResponse(
     val createdAt: String
 )
 
+//Login request and response
+data class LoginRequest(
+    val email: String,
+    val password: String
+)
+
+data class LoginResponse(
+    val success: Boolean
+)
+
+
 interface ApiService {
+
     @POST("users")
     fun registerUser(@Body request: RegisterRequest): Call<RegisterResponse>
+
+    @POST("users/login")
+    fun loginUser(@Body request: LoginRequest): Call<LoginResponse>
 }

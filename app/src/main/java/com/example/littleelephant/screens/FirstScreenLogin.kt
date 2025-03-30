@@ -1,5 +1,6 @@
 package com.example.littleelephant.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,7 +30,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,37 +51,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.littleelephant.R
+import com.example.littleelephant.apiRest.LoginRequest
+import com.example.littleelephant.apiRest.UserViewModel
 import com.example.littleelephant.ui.theme.LittleElephantTheme
 
 @Composable
-fun FirstScreenLogin(navController: NavController) {
+fun FirstScreenLogin(navController: NavController, viewModel: UserViewModel = viewModel()) {
     Scaffold {
         LittleElephantTheme {
-            Content(modifier = Modifier.padding(it).background(color = Color(0xFFFACDDD)), navController)
+            Content(modifier = Modifier.padding(it).background(color = Color(0xFFFACDDD)), navController, viewModel)
         }
-
     }
 }
 
 @Composable
-fun Content(modifier: Modifier = Modifier, navController: NavController) {
+fun Content(modifier: Modifier = Modifier, navController: NavController, viewModel: UserViewModel) {
     Column(modifier = modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.elefantelenguaafuera), // Reemplaza 'your_image_name' con el nombre real de tu imagen en res/drawable
+            painter = painterResource(id = R.drawable.elefantelenguaafuera),
             contentDescription = "Imagen superior",
             modifier = Modifier
                 .fillMaxWidth().weight(1f),
-            contentScale = ContentScale.Crop // Ajusta la escala de la imagen para llenar el espacio de forma adecuada
+            contentScale = ContentScale.Crop
         )
-        BottomContainer(modifier = Modifier.fillMaxSize().weight(1f), navController)
+        BottomContainer(modifier = Modifier.fillMaxSize().weight(1f), navController, viewModel)
     }
 }
 
 @Composable
-fun BottomContainer(modifier: Modifier = Modifier, navController: NavController) {
+fun BottomContainer(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    viewModel: UserViewModel
+) {
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -95,7 +105,7 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
                 text = "Little Elephant",
                 color = Color(0xFFFACDDD),
                 modifier = Modifier
-                    .fillMaxWidth() // Para alinear correctamente el texto
+                    .fillMaxWidth()
                     .padding(bottom = 20.dp),
                 textAlign = TextAlign.Center,
                 style = TextStyle(
@@ -105,7 +115,6 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
             )
             val usuario = remember { mutableStateOf(TextFieldValue()) }
 
-            // Campo de texto para el usuario
             BasicTextField(
                 value = usuario.value,
                 onValueChange = { usuario.value = it },
@@ -114,16 +123,16 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
                     .fillMaxWidth(0.8f)
                     .padding(vertical = 8.dp)
                     .background(Color(0xFFAE3251), shape = RoundedCornerShape(12.dp))
-                    .padding(horizontal = 16.dp), // Espaciado interno uniforme
+                    .padding(horizontal = 16.dp),
                 textStyle = TextStyle(
                     color = Color.White,
                     fontSize = 22.sp,
-                    lineHeight = 28.sp // Ajusta la altura de línea para alinearlo con OutlinedTextField
+                    lineHeight = 28.sp
                 ),
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.CenterStart // Alinea el texto como en OutlinedTextField
+                        contentAlignment = Alignment.CenterStart
                     ) {
                         if (usuario.value.text.isEmpty()) {
                             Text(
@@ -138,7 +147,6 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
                 cursorBrush = SolidColor(Color.White)
             )
 
-            // Campo de texto para la contraseña
             var passwordState by remember { mutableStateOf(TextFieldState("")) }
             var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -167,11 +175,10 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
             )
 
             Row(
-                verticalAlignment = Alignment.CenterVertically, // Alinea los elementos verticalmente
-                horizontalArrangement = Arrangement.spacedBy(0.dp), // Elimina el espacio entre los elementos
-                modifier = Modifier.padding(start = 0.dp, end = 0.dp, top = 4.dp) // Reduce el espacio entre los elementos, ajusta el top si es necesario
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(0.dp),
+                modifier = Modifier.padding(start = 0.dp, end = 0.dp, top = 4.dp)
             ) {
-                // Sección "¿No tienes cuenta?"
                 Text(
                     text = "¿No tienes cuenta? ",
                     color = Color.White,
@@ -187,16 +194,18 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .clickable { navController.navigate("register_screen") }
-                        .padding(end = 0.dp), // Asegura que no haya espacio a la derecha del texto
+                        .padding(end = 0.dp),
                     textAlign = TextAlign.Center
                 )
             }
 
-            // Botón de "Iniciar"
             Button(
                 onClick = {
-                    navController.navigate("second_screen")
-
+                    val loginRequest = LoginRequest(
+                        email = usuario.value.text,
+                        password = passwordState.text.toString()
+                    )
+                    viewModel.loginUser(loginRequest)  // Llamada al ViewModel para el login
                 },
                 modifier = Modifier
                     .padding(top = 16.dp)
@@ -210,14 +219,38 @@ fun BottomContainer(modifier: Modifier = Modifier, navController: NavController)
             ) {
                 Text(
                     text = "Iniciar",
-                    fontSize = 22.sp, // Tamaño de la fuente
-                    color = Color.White, // Color de texto
-                    fontWeight = FontWeight.Bold // Negrita para mayor impacto
+                    fontSize = 22.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
                 )
+            }
+
+            // Observando el resultado de login
+            val context = LocalContext.current
+            val loginSuccess by viewModel.loginSuccess.observeAsState()
+            val loginError by viewModel.loginError.observeAsState()
+
+            // Manejo de la respuesta del login
+            LaunchedEffect(loginSuccess) {
+                loginSuccess?.let {
+                    // Muestra un mensaje de éxito y navega a la pantalla de inicio
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    navController.navigate("second_screen") // Asegúrate de que esta ruta esté correctamente configurada
+                    viewModel.clearLoginState() // Limpia el estado para evitar ejecuciones repetidas
+                }
+            }
+
+            LaunchedEffect(loginError) {
+                loginError?.let {
+                    // Muestra un mensaje de error
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    viewModel.clearLoginState() // Limpia el estado después de mostrar el error
+                }
             }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

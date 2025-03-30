@@ -2,7 +2,6 @@ package com.example.littleelephant.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,7 +48,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF7AB9D7), Color(0xFF57A3CC)) // Fondo rosa con gradiente
+                    colors = listOf(Color(0xFFF3C3B4), Color(0xFFF5825E)) // Fondo rosa con gradiente
                 )
             )
     ) {
@@ -58,7 +57,8 @@ fun RegistrationSuccessScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .align(Alignment.Center),
+                .align(Alignment.Center)
+            ,
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -79,13 +79,10 @@ fun RegistrationSuccessScreen(navController: NavController) {
                         clip = false
                     )
                     .background(
-                        color = Color(0xFF4F9BC4), // Fondo blanco
-                        shape = RoundedCornerShape(16.dp) // Esquinas redondeadas para el fondo
-                    )
-                    .border(
-                        width = 2.dp, // Borde de 2 dp
-                        color = Color(0xFF519FC9), // Color del borde
-                        shape = RoundedCornerShape(16.dp) // Borde con esquinas redondeadas
+                        shape = RoundedCornerShape(16.dp), // Esquinas redondeadas para el fondo
+                        brush = Brush.horizontalGradient(
+                        colors = listOf(Color(0xFFD2623B), Color(0xFFD2623B))
+                        )
                     )
                     .padding(12.dp) // Añadimos un padding para separar el texto del borde
             )
