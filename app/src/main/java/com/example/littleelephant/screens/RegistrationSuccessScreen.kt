@@ -2,6 +2,7 @@ package com.example.littleelephant.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -47,7 +49,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF7AA9D2), Color(0xFF4F9BC4)) // Fondo rosa con gradiente
+                    colors = listOf(Color(0xFF7AB9D7), Color(0xFF57A3CC)) // Fondo rosa con gradiente
                 )
             )
     ) {
@@ -66,10 +68,26 @@ fun RegistrationSuccessScreen(navController: NavController) {
                 style = TextStyle(
                     fontFamily = courgetteFont, // Aplica la fuente Courgette Regular
                     fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp,
-                    color = Color(0xFF454667)
+                    fontSize = 20.sp, // Tamaño de la fuente
+                    color = Color(0xFFD7E9ED), // Color del texto
                 ),
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .graphicsLayer(
+                        shadowElevation = 8.dp.value, // Elevación de la sombra
+                        shape = RoundedCornerShape(16.dp), // Esquinas redondeadas
+                        clip = false
+                    )
+                    .background(
+                        color = Color(0xFF4F9BC4), // Fondo blanco
+                        shape = RoundedCornerShape(16.dp) // Esquinas redondeadas para el fondo
+                    )
+                    .border(
+                        width = 2.dp, // Borde de 2 dp
+                        color = Color(0xFF519FC9), // Color del borde
+                        shape = RoundedCornerShape(16.dp) // Borde con esquinas redondeadas
+                    )
+                    .padding(12.dp) // Añadimos un padding para separar el texto del borde
             )
 
 
