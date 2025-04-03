@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -48,7 +47,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFF3C3B4), Color(0xFFF5825E)) // Fondo rosa con gradiente
+                    colors = listOf(Color(0xFFFFFFFF), Color(0xFFD7E9ED)) // Fondo rosa con gradiente
                 )
             )
     ) {
@@ -64,29 +63,18 @@ fun RegistrationSuccessScreen(navController: NavController) {
         ) {
             // Texto en la parte superior
             Text(
-                text = "¡Usuario creado correctamente!",
+                text = "Usuario creado correctamente ✅",
                 style = TextStyle(
                     fontFamily = courgetteFont, // Aplica la fuente Courgette Regular
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp, // Tamaño de la fuente
-                    color = Color(0xFFD7E9ED), // Color del texto
+                    fontSize = 22.sp, // Tamaño de la fuente
+                    color = Color(0xFF616583), // Color del texto
                 ),
                 modifier = Modifier
                     .padding(bottom = 16.dp)
-                    .graphicsLayer(
-                        shadowElevation = 8.dp.value, // Elevación de la sombra
-                        shape = RoundedCornerShape(16.dp), // Esquinas redondeadas
-                        clip = false
-                    )
-                    .background(
-                        shape = RoundedCornerShape(16.dp), // Esquinas redondeadas para el fondo
-                        brush = Brush.horizontalGradient(
-                        colors = listOf(Color(0xFFD2623B), Color(0xFFD2623B))
-                        )
-                    )
-                    .padding(12.dp) // Añadimos un padding para separar el texto del borde
-            )
+                    .padding(12.dp), // Añadimos un padding para separar el texto del borde
 
+            )
 
             // Imagen centrada, ajustada al tamaño de la pantalla
             Image(
@@ -101,7 +89,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
             // Botón de "Iniciar sesión"
             Button(
                 onClick = {
-                    navController.navigate("login") {
+                    navController.navigate("login_screen") {
                         popUpTo("registration_success") { inclusive = true }
                     }
                 },
@@ -115,7 +103,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
                     .shadow(4.dp, shape = RoundedCornerShape(50), clip = true) // Agregar sombra
                     .background(
                         brush = Brush.horizontalGradient( // Gradiente horizontal para el fondo
-                            colors = listOf(Color(0xFFD55F36), Color(0xFFFF7043))
+                            colors = listOf(Color(0xFF696D8A), Color(0xFF616583))
                         ),
                         shape = RoundedCornerShape(50) // Redondeamos el botón
                     )

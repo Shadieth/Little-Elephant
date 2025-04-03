@@ -75,7 +75,7 @@ fun SecondScreenLevels(navController: NavHostController? = null) {
             BottomAppBar(
                 containerColor = BlueOne, // Color de fondo del BottomAppBar
                 actions = {
-                    IconButton(onClick = { navController?.navigate("first_screen") }) {
+                    IconButton(onClick = { navController?.navigate("login_screen") }) {
                         Icon(Icons.Default.Home, contentDescription = "Inicio")
                     }
                     Spacer(modifier = Modifier.width(16.dp))
