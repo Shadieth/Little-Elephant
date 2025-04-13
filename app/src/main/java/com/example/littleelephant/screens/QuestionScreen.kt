@@ -1,5 +1,6 @@
 package com.example.littleelephant.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -8,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
@@ -25,88 +27,113 @@ fun QuestionScreen(
 ) {
     var selectedOption by remember { mutableStateOf<String?>(null) }
 
-    Column(
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(Color(0xFFDADFF8), Color(0xFFDFF8FC), Color(0xFFF8BBD0))
+    )
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+            .background(brush = backgroundBrush)
+            .padding(24.dp)
     ) {
-        AsyncImage(
-            model = question.image,
-            contentDescription = "Pregunta",
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(220.dp),
-            contentScale = ContentScale.Crop
-        )
-
-        Text(
-            text = "Seleccione la respuesta correcta",
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        question.options.forEach { option ->
-            val isCorrect = option == question.correctAnswer
-            val isSelected = option == selectedOption
-
-            val backgroundColor = when {
-                selectedOption == null -> MaterialTheme.colorScheme.primary
-                isSelected && isCorrect -> Color(0xFF4CAF50) // Verde
-                isSelected && !isCorrect -> Color(0xFFF44336) // Rojo
-                isCorrect -> Color(0xFF4CAF50) // Muestra la correcta si falló
-                else -> Color(0xFFBDBDBD) // Neutro
-            }
-
-            Button(
-                onClick = {
-                    if (selectedOption == null) {
-                        selectedOption = option
-                    }
-                },
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            AsyncImage(
+                model = question.image,
+                contentDescription = "Pregunta",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = backgroundColor,
-                    contentColor = Color.White
-                )
-            ) {
-                Text(text = option)
-            }
-        }
-
-        // ✅ Feedback opcional
-        if (selectedOption != null) {
-            val isAnswerCorrect = selectedOption == question.correctAnswer
-            val feedbackText = if (isAnswerCorrect) {
-                "✅ ¡Correcto!"
-            } else {
-                "❌ Incorrecto. La respuesta era: ${question.correctAnswer}"
-            }
-
-            Text(
-                text = feedbackText,
-                color = if (isAnswerCorrect) Color(0xFF4CAF50) else Color(0xFFF44336),
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(top = 8.dp)
+                    .height(220.dp),
+                contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Seleccione la respuesta correcta",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            Button(
-                onClick = onNext,
-                shape = RoundedCornerShape(50),
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text("Siguiente")
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Siguiente")
+            question.options.forEach { option ->
+                val isCorrect = option == question.correctAnswer
+                val isSelected = option == selectedOption
+
+                val baseColor = when {
+                    selectedOption == null -> Color(0xFF7986CB)
+                    isSelected && isCorrect -> Color(0xFF4CAF50)
+                    isSelected && !isCorrect -> Color(0xFFF44336)
+                    isCorrect -> Color(0xFF4CAF50)
+                    else -> Color(0xFFBDBDBD)
+                }
+
+                val softBrush = Brush.horizontalGradient(
+                    colors = listOf(
+                        baseColor.copy(alpha = 0.9f),
+                        baseColor
+                    )
+                )
+
+                Button(
+                    onClick = { if (selectedOption == null) selectedOption = option },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                        .height(60.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.White
+                    )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = softBrush,
+                                shape = RoundedCornerShape(20.dp)
+                            )
+                            .padding(horizontal = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = option,
+                            style = MaterialTheme.typography.titleMedium.copy(color = Color.White)
+                        )
+                    }
+                }
+            }
+
+            if (selectedOption != null) {
+                val isCorrect = selectedOption == question.correctAnswer
+                val feedbackText = if (isCorrect) "✅ ¡Correcto!" else "❌ Incorrecto. La respuesta era: ${question.correctAnswer}"
+
+                Text(
+                    text = feedbackText,
+                    color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336),
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = onNext,
+                    shape = RoundedCornerShape(50),
+                    modifier = Modifier.align(Alignment.End),
+                    elevation = ButtonDefaults.buttonElevation(10.dp)
+                ) {
+                    Text("Siguiente")
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Siguiente")
+                }
             }
         }
     }
+
 }
 
 @Preview(showBackground = true)

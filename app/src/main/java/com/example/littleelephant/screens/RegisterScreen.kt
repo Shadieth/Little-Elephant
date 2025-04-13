@@ -100,7 +100,7 @@ fun RegisterScreen(navController: NavHostController? = null) {
                     brush = Brush.verticalGradient(
                         listOf(
                             BackgroundColor, // Color base
-                            Color(0xFFFADAE5) // Azul oscuro futurista
+                            Color(0xFFFADAE5)
                         )
                     )
                 )
