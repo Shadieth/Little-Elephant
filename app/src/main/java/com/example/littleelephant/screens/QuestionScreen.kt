@@ -10,10 +10,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -69,7 +72,7 @@ fun QuestionScreen(
                 val isSelected = option == selectedOption
 
                 val baseColor = when {
-                    selectedOption == null -> Color(0xFF7986CB)
+                    selectedOption == null -> Color(0xFF307594)
                     isSelected && isCorrect -> Color(0xFF4CAF50)
                     isSelected && !isCorrect -> Color(0xFFF44336)
                     isCorrect -> Color(0xFF4CAF50)
@@ -110,7 +113,9 @@ fun QuestionScreen(
                     ) {
                         Text(
                             text = option,
-                            style = MaterialTheme.typography.titleMedium.copy(color = Color.White)
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
                         )
                     }
                 }
@@ -142,5 +147,24 @@ fun QuestionScreen(
                 }
             }
         }
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun QuestionScreenPreview() {
+    val sampleQuestion = Question(
+        image = "https://example.com/images/elephant.png", // puedes reemplazar por una imagen real
+        options = listOf("Gato", "Elefante", "Perro"),
+        correctAnswer = "Elefante"
+    )
+
+    MaterialTheme {
+        QuestionScreen(
+            question = sampleQuestion,
+            onNext = {},
+            onWrongAnswer = {},
+            navController = null
+        )
     }
 }
