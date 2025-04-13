@@ -9,11 +9,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -38,19 +38,21 @@ fun QuestionScreen(
             .padding(24.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.Center // 🟢 CENTRADO
         ) {
             AsyncImage(
                 model = question.image,
-                contentDescription = "Pregunta",
+                contentDescription = "Imagen de la pregunta",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp),
-                contentScale = ContentScale.Crop
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = ContentScale.Fit
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = "Seleccione la respuesta correcta",
@@ -58,6 +60,8 @@ fun QuestionScreen(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
 
             question.options.forEach { option ->
                 val isCorrect = option == question.correctAnswer
@@ -93,11 +97,7 @@ fun QuestionScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(
-                                brush = softBrush,
-                                shape = RoundedCornerShape(20.dp)
-                            )
-                            .padding(horizontal = 16.dp),
+                            .background(brush = softBrush, shape = RoundedCornerShape(20.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
@@ -112,11 +112,13 @@ fun QuestionScreen(
                 val isCorrect = selectedOption == question.correctAnswer
                 val feedbackText = if (isCorrect) "✅ ¡Correcto!" else "❌ Incorrecto. La respuesta era: ${question.correctAnswer}"
 
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Text(
                     text = feedbackText,
                     color = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFF44336),
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -133,20 +135,4 @@ fun QuestionScreen(
             }
         }
     }
-
 }
-
-@Preview(showBackground = true)
-@Composable
-fun QuestionScreenPreview() {
-    val sampleQuestion = Question(
-        image = "https://example.com/images/frog.jpg", // puedes usar una URL válida si quieres ver imagen
-        options = listOf("Toad", "Frog", "Lizard"),
-        correctAnswer = "Frog"
-    )
-
-    MaterialTheme {
-        QuestionScreen(question = sampleQuestion)
-    }
-}
-
