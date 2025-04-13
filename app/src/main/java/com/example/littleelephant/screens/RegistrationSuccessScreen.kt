@@ -47,7 +47,7 @@ fun RegistrationSuccessScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFFFFFFF), Color(0xFFD37B97)) // Fondo rosa con gradiente
+                    colors = listOf(Color(0xFFC5CAE9), Color(0xFFE1BEE7), Color(0xFFFCE4EC)) // Fondo rosa con gradiente
                 )
             )
     ) {

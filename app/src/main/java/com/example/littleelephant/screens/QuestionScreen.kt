@@ -23,7 +23,8 @@ import com.example.littleelephant.apiRest.Question
 fun QuestionScreen(
     question: Question,
     onNext: () -> Unit = {},
-    navController: NavController? = null
+    navController: NavController? = null,
+    onWrongAnswer: () -> Unit
 ) {
     var selectedOption by remember { mutableStateOf<String?>(null) }
 
@@ -83,7 +84,14 @@ fun QuestionScreen(
                 )
 
                 Button(
-                    onClick = { if (selectedOption == null) selectedOption = option },
+                    onClick = {
+                        if (selectedOption == null) {
+                            selectedOption = option
+                            if (option != question.correctAnswer) {
+                                onWrongAnswer()
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp)
