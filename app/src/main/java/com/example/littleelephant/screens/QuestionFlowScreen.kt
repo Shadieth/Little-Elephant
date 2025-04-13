@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.littleelephant.apiRest.EcosystemViewModel
 import com.example.littleelephant.apiRest.Question
+import com.example.littleelephant.naviagtion.UserSessionManager
 
 @Composable
 fun QuestionFlowScreen(
@@ -15,8 +17,12 @@ fun QuestionFlowScreen(
     ecosystemName: String,
     viewModel: EcosystemViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+    val context = LocalContext.current
     val ecosystems = viewModel.ecosystems.value
+    val unlockedLevels = viewModel.unlockedLevels.value
+
     val ecosystem = ecosystems.find { it.name == ecosystemName }
+    val currentIndexInList = ecosystems.indexOfFirst { it.name == ecosystemName }
 
     if (ecosystem == null) {
         Text(
@@ -28,6 +34,7 @@ fun QuestionFlowScreen(
     }
 
     var currentIndex by remember { mutableIntStateOf(0) }
+    var hasUnlockedNext by remember { mutableStateOf(false) }
 
     if (currentIndex < ecosystem.questions.size) {
         val currentQuestion: Question = ecosystem.questions[currentIndex]
@@ -39,7 +46,28 @@ fun QuestionFlowScreen(
             )
         }
     } else {
-        FinishedScreen(onBackToLevels = { navController.popBackStack() })
+        // Desbloqueo del siguiente ecosistema (solo 1 vez)
+        LaunchedEffect(Unit) {
+            val nextLevel = currentIndexInList + 1
+            val email = UserSessionManager.getEmail(context)
+            if (
+                email != null &&
+                nextLevel < ecosystems.size &&
+                (nextLevel + 1) !in unlockedLevels &&
+                !hasUnlockedNext
+            ) {
+                viewModel.unlockLevel(email, nextLevel + 1) // Niveles en backend empiezan desde 1
+                hasUnlockedNext = true
+            }
+        }
+
+        if (currentIndexInList == ecosystems.lastIndex) {
+            // Último ecosistema completado
+            CongratulationsScreen(onBackToHome = { navController.popBackStack() })
+        } else {
+            FinishedScreen(onBackToLevels = { navController.popBackStack() })
+        }
+
     }
 }
 
@@ -61,6 +89,7 @@ fun FinishedScreen(onBackToLevels: () -> Unit) {
         }
     }
 }
+
 
 
 

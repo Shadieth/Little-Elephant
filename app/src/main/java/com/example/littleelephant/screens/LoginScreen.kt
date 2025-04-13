@@ -57,6 +57,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.littleelephant.R
 import com.example.littleelephant.apiRest.LoginRequest
 import com.example.littleelephant.apiRest.UserViewModel
+import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.ui.theme.LittleElephantTheme
 
 @Composable
@@ -233,10 +234,17 @@ fun BottomContainer(
             // Manejo de la respuesta del login
             LaunchedEffect(loginSuccess) {
                 loginSuccess?.let {
-                    // Muestra un mensaje de éxito y navega a la pantalla de inicio
+                    // Mostrar mensaje
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    navController.navigate("ecosystems_screen") // Asegúrate de que esta ruta esté correctamente configurada
-                    viewModel.clearLoginState() // Limpia el estado para evitar ejecuciones repetidas
+
+                    // Guardar email del usuario logueado
+                    UserSessionManager.saveEmail(context, usuario.value.text)
+
+                    // Navegar a la pantalla principal
+                    navController.navigate("ecosystems_screen")
+
+                    // Limpiar estado para evitar repetición
+                    viewModel.clearLoginState()
                 }
             }
 

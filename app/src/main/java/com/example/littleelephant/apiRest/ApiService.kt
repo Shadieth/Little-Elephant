@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 //Register request and response
 data class RegisterRequest(
@@ -45,6 +46,20 @@ data class Question(
     val correctAnswer: String
 )
 
+data class UserResponse(
+    val email: String,
+    val unlockedLevels: List<Int>
+)
+
+data class UnlockLevelRequest(
+    val level: Int
+)
+
+data class UnlockLevelResponse(
+    val message: String,
+    val unlockedLevels: List<Int>
+)
+
 interface ApiService {
 
     @POST("users")
@@ -55,4 +70,14 @@ interface ApiService {
 
     @GET("ecosystems") // Ajusta si tiene prefijo
     suspend fun getEcosystems(): List<Ecosystem>
+
+    @GET("users/by-email/{email}")
+    suspend fun getUserByEmail(@Path("email") email: String): UserResponse
+
+    @POST("users/{email}/unlock-level")
+    suspend fun unlockLevel(
+        @Path("email") email: String,
+        @Body request: UnlockLevelRequest
+    ): UnlockLevelResponse
+
 }
