@@ -31,13 +31,13 @@ fun QuestionFlowScreen(
 
     if (currentIndex < ecosystem.questions.size) {
         val currentQuestion: Question = ecosystem.questions[currentIndex]
-        QuestionScreen(
-            question = currentQuestion,
-            onNext = {
-                currentIndex++
-            },
-            navController = navController
-        )
+        key(currentQuestion) {
+            QuestionScreen(
+                question = currentQuestion,
+                onNext = { currentIndex++ },
+                navController = navController
+            )
+        }
     } else {
         FinishedScreen(onBackToLevels = { navController.popBackStack() })
     }

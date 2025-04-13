@@ -1,4 +1,5 @@
 package com.example.littleelephant.screens
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,60 +33,50 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.littleelephant.R
-import com.example.littleelephant.data.Level
+import com.example.littleelephant.data.Ecosystem
 import com.example.littleelephant.naviagtion.AppScreens
 import com.example.littleelephant.ui.theme.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SecondScreenLevels(navController: NavHostController) {
-    // Lista de niveles con los colores definidos
-    val levels = listOf(
-        Level("Nivel 1", "Farm", granja,  R.drawable.granja),
-        Level("Nivel 2", "Ocean", oceano, R.drawable.oceano),
-        Level("Nivel 3", "Jungle", selva, R.drawable.selva),
-        Level("Nivel 4", "Savannah", sabana, R.drawable.sabana),
-        Level("Nivel 5", "Swamp", pantano, R.drawable.pantano)
+fun EcosystemsScreen(navController: NavHostController) {
+    val ecosystems = listOf(
+        Ecosystem("Farm", granja, R.drawable.granja),
+        Ecosystem("Ocean", oceano, R.drawable.oceano),
+        Ecosystem("Jungle", selva, R.drawable.selva),
+        Ecosystem("Savannah", sabana, R.drawable.sabana),
+        Ecosystem("Swamp", pantano, R.drawable.pantano)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
-
                 title = {
-                    Text(
-                        "Niveles",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Ecosistemas", color = Color.White, fontWeight = FontWeight.Bold)
                 },
                 actions = {
-                    IconButton(
-                        onClick = { /* Acción */ },
-                        modifier = Modifier.size(90.dp)) {
+                    IconButton(onClick = {}) {
                         Image(
                             painter = painterResource(id = R.drawable.elefanteleyendo),
                             contentDescription = "Icono Little Elephant",
-                            modifier = Modifier.size(64.dp), // Ajusta el tamaño aquí
-                            contentScale = ContentScale.Fit // Ajusta cómo se escala la imagen
+                            modifier = Modifier.size(64.dp),
+                            contentScale = ContentScale.Fit
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = BlueOne, // Color del fondo de la TopAppBar
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = BlueOne)
             )
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = BlueOne, // Color de fondo del BottomAppBar
+                containerColor = BlueOne,
                 actions = {
                     IconButton(onClick = { navController.navigate("login_screen") }) {
                         Icon(Icons.Default.Home, contentDescription = "Inicio")
                     }
                     Spacer(modifier = Modifier.width(16.dp))
-                    IconButton(onClick = { navController.navigate("preferences_screen")}) {
+                    IconButton(onClick = { navController.navigate("preferences_screen") }) {
                         Icon(Icons.Default.Settings, contentDescription = "Ajustes")
                     }
                 }
@@ -96,65 +87,47 @@ fun SecondScreenLevels(navController: NavHostController) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = Color(0xFFF4F2F2)),
+                .background(color = Color(0xFFF4F2F2))
         ) {
-            items(levels.size) { index ->
-                val level = levels[index]
+            items(ecosystems.size) { index ->
+                val ecosystem = ecosystems[index]
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .height(100.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = level.color
-                    ),
-                    elevation = CardDefaults.cardElevation(
-                        defaultElevation = 8.dp
-                    ),
-                    onClick = { navController.navigate(AppScreens.QuestionScreen.createRoute(level.location)) }
+                    colors = CardDefaults.cardColors(containerColor = ecosystem.color),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                    onClick = {
+                        navController.navigate(AppScreens.QuestionScreen.createRoute(ecosystem.name))
+                    }
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(16.dp)
-                        ,
-                        contentAlignment = Alignment.TopStart,
+                            .padding(16.dp),
+                        contentAlignment = Alignment.TopStart
                     ) {
                         Text(
+                            text = ecosystem.name,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
                             style = TextStyle(
-                                fontSize = 20.sp,
                                 shadow = Shadow(
                                     color = Color.DarkGray,
                                     blurRadius = 5f,
                                     offset = Offset(0f, 5f)
                                 )
-                            ),
-                            text = level.name, // Mostramos el nombre del nivel
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-
+                            )
                         )
                         Image(
-                            painter = painterResource(id = level.imageResId),
-                            contentDescription = "Imagen del nivel",
+                            painter = painterResource(id = ecosystem.imageResId),
+                            contentDescription = "Imagen del ecosistema",
                             modifier = Modifier
                                 .size(100.dp)
                                 .align(Alignment.BottomCenter)
-                        )
-                        Text(
-                            style = TextStyle(
-                                fontSize = 20.sp,
-                                shadow = Shadow(
-                                    color = Color.DarkGray,
-                                    blurRadius = 5f,
-                                    offset = Offset(0f, 5f)
-                                )
-                            ),
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            text = level.location, // Mostramos el nombre del nivel
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
                         )
                     }
                 }
@@ -166,20 +139,19 @@ fun SecondScreenLevels(navController: NavHostController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SecondScreenLevelsPreviewContent() {
-    // Mismo contenido que SecondScreenLevels, pero sin navegación real
-    val levels = listOf(
-        Level("Nivel 1", "Granja", granja, R.drawable.granja),
-        Level("Nivel 2", "Océano", oceano, R.drawable.oceano),
-        Level("Nivel 3", "Selva", selva, R.drawable.selva),
-        Level("Nivel 4", "Sabana", sabana, R.drawable.sabana),
-        Level("Nivel 5", "Pantano", pantano, R.drawable.pantano)
+    val ecosystems = listOf(
+        Ecosystem("Farm", granja, R.drawable.granja),
+        Ecosystem("Ocean", oceano, R.drawable.oceano),
+        Ecosystem("Jungle", selva, R.drawable.selva),
+        Ecosystem("Savannah", sabana, R.drawable.sabana),
+        Ecosystem("Swamp", pantano, R.drawable.pantano)
     )
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text("Niveles", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Ecosistemas", color = Color.White, fontWeight = FontWeight.Bold)
                 },
                 actions = {
                     IconButton(onClick = {}) {
@@ -215,15 +187,15 @@ fun SecondScreenLevelsPreviewContent() {
                 .padding(innerPadding)
                 .background(color = Color(0xFFF4F2F2))
         ) {
-            items(levels.size) { index ->
-                val level = levels[index]
+            items(ecosystems.size) { index ->
+                val ecosystem = ecosystems[index]
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                         .height(100.dp),
                     shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = level.color),
+                    colors = CardDefaults.cardColors(containerColor = ecosystem.color),
                     elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
                     onClick = { /* Nada en preview */ }
                 ) {
@@ -234,7 +206,7 @@ fun SecondScreenLevelsPreviewContent() {
                         contentAlignment = Alignment.TopStart
                     ) {
                         Text(
-                            text = level.name,
+                            text = ecosystem.name,
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             fontSize = 20.sp,
@@ -247,25 +219,11 @@ fun SecondScreenLevelsPreviewContent() {
                             )
                         )
                         Image(
-                            painter = painterResource(id = level.imageResId),
-                            contentDescription = "Imagen del nivel",
+                            painter = painterResource(id = ecosystem.imageResId),
+                            contentDescription = "Imagen del ecosistema",
                             modifier = Modifier
                                 .size(100.dp)
                                 .align(Alignment.BottomCenter)
-                        )
-                        Text(
-                            text = level.location,
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
-                            modifier = Modifier.align(Alignment.BottomEnd),
-                            style = TextStyle(
-                                shadow = Shadow(
-                                    color = Color.DarkGray,
-                                    blurRadius = 5f,
-                                    offset = Offset(0f, 5f)
-                                )
-                            )
                         )
                     }
                 }
@@ -276,11 +234,10 @@ fun SecondScreenLevelsPreviewContent() {
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SecondScreenLevelsPreview() {
+fun EcosystemsScreenPreview() {
     LittleElephantTheme {
         SecondScreenLevelsPreviewContent()
     }
 }
-
 
 

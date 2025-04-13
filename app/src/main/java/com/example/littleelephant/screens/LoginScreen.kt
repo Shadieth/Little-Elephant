@@ -60,7 +60,7 @@ import com.example.littleelephant.apiRest.UserViewModel
 import com.example.littleelephant.ui.theme.LittleElephantTheme
 
 @Composable
-fun FirstScreenLogin(navController: NavController, viewModel: UserViewModel = viewModel()) {
+fun LoginScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
     Scaffold {
         LittleElephantTheme {
             Content(modifier = Modifier.padding(it).background(color = Color(0xFFFACDDD)), navController, viewModel)
@@ -235,7 +235,7 @@ fun BottomContainer(
                 loginSuccess?.let {
                     // Muestra un mensaje de éxito y navega a la pantalla de inicio
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    navController.navigate("second_screen") // Asegúrate de que esta ruta esté correctamente configurada
+                    navController.navigate("ecosystems_screen") // Asegúrate de que esta ruta esté correctamente configurada
                     viewModel.clearLoginState() // Limpia el estado para evitar ejecuciones repetidas
                 }
             }
@@ -254,9 +254,9 @@ fun BottomContainer(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewFirstScreenLogin() {
+fun LoginScreenPreview() {
     val navController = rememberNavController()
-    FirstScreenLogin(navController = navController)
+    LoginScreen(navController = navController)
 }
 
 
