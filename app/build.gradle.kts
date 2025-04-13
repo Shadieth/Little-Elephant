@@ -77,6 +77,8 @@ dependencies {
     implementation ("androidx.compose.ui:ui-text-google-fonts:1.0.1")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
 
 
     testImplementation(libs.junit)
