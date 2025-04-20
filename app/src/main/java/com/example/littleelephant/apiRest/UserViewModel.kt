@@ -1,8 +1,12 @@
 package com.example.littleelephant.apiRest
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
 
@@ -54,6 +58,37 @@ class UserViewModel : ViewModel() {
         _loginSuccess.value = null
         _loginError.value = null
     }
+
+    val userData = mutableStateOf<UserResponseUpdate?>(null)
+
+    fun fetchUserByEmailForProfile(email: String) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.instance.getUserByEmailForProfile(email)
+                Log.d("UserViewModel", "Perfil cargado: $response")
+                userData.value = response
+            } catch (e: Exception) {
+                Log.e("UserViewModel", "Error al obtener perfil", e)
+            }
+        }
+    }
+
+    fun updateUserProfile(
+        email: String,
+        request: UpdateUserRequest,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                RetrofitClient.instance.updateUser(email, request)
+                onSuccess()
+            } catch (e: Exception) {
+                onError(e.message ?: "Error desconocido")
+            }
+        }
+    }
+
 
 }
 

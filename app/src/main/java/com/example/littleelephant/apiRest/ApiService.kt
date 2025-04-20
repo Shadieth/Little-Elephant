@@ -4,6 +4,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 //Register request and response
@@ -60,6 +61,24 @@ data class UnlockLevelResponse(
     val unlockedLevels: List<Int>
 )
 
+data class UpdateUserRequest(
+    val firstName: String,
+    val lastName: String,
+    val birthDate: String,
+    val gender: String,
+    val password: String? = null,
+    val currentPassword: String? = null
+)
+
+data class UserResponseUpdate(
+    val firstName: String?,
+    val lastName: String?,
+    val birthDate: String?,
+    val gender: String?,
+    val email: String,
+    val unlockedLevels: List<Int>
+)
+
 interface ApiService {
 
     @POST("users")
@@ -79,5 +98,14 @@ interface ApiService {
         @Path("email") email: String,
         @Body request: UnlockLevelRequest
     ): UnlockLevelResponse
+
+    @GET("users/{email}")
+    suspend fun getUserByEmailForProfile(@Path("email") email: String): UserResponseUpdate
+
+    @PUT("users/by-email/{email}")
+    suspend fun updateUser(
+        @Path("email") email: String,
+        @Body request: UpdateUserRequest
+    ): UserResponseUpdate
 
 }
