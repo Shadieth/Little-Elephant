@@ -25,6 +25,7 @@ import com.example.littleelephant.apiRest.UserViewModel
 import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.apiRest.UpdateUserRequest
 import android.widget.Toast
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.Alignment
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +45,8 @@ fun PreferencesScreen(
             Color(0xFFF1D8CE)
         )
     )
+    val blushColorArenaAtardecer = Color(0xFFF3D2B8) // tono arena suave con toque cálido
+
 
     // Campos editables
     var firstName by remember { mutableStateOf("") }
@@ -100,19 +103,20 @@ fun PreferencesScreen(
                     contentScale = ContentScale.Fit
                 )
 
-                OutlinedTextField(firstName, { firstName = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(lastName, { lastName = it }, label = { Text("Apellido") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(firstName, { firstName = it }, label = { Text("Nombre") }, modifier = Modifier.fillMaxWidth().background(blushColorArenaAtardecer))
+                OutlinedTextField(lastName, { lastName = it }, label = { Text("Apellido") }, modifier = Modifier.fillMaxWidth().background(blushColorArenaAtardecer))
                 OutlinedTextField(birthDate, { birthDate = it }, label = { Text("Fecha de nacimiento") },
-                    modifier = Modifier.fillMaxWidth(), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+                    modifier = Modifier.fillMaxWidth().background(blushColorArenaAtardecer), keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
                 ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                     OutlinedTextField(
                         readOnly = true, value = gender, onValueChange = {},
                         label = { Text("Género") },
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-                        modifier = Modifier.menuAnchor().fillMaxWidth()
+                        modifier = Modifier.menuAnchor().fillMaxWidth().background(blushColorArenaAtardecer)
                     )
-                    ExposedDropdownMenu(expanded, onDismissRequest = { expanded = false }) {
+                    ExposedDropdownMenu(expanded, onDismissRequest = { expanded = false },
+                        modifier = Modifier.background(blushColorArenaAtardecer)) {
                         genderOptions.forEach {
                             DropdownMenuItem(text = { Text(it) }, onClick = {
                                 gender = it
@@ -123,10 +127,10 @@ fun PreferencesScreen(
                 }
 
                 OutlinedTextField(currentPassword, { currentPassword = it }, label = { Text("Contraseña actual") },
-                    modifier = Modifier.fillMaxWidth(), visualTransformation = PasswordVisualTransformation())
+                    modifier = Modifier.fillMaxWidth().background(blushColorArenaAtardecer), visualTransformation = PasswordVisualTransformation())
 
                 OutlinedTextField(newPassword, { newPassword = it }, label = { Text("Nueva contraseña") },
-                    modifier = Modifier.fillMaxWidth(), visualTransformation = PasswordVisualTransformation())
+                    modifier = Modifier.fillMaxWidth().background(blushColorArenaAtardecer), visualTransformation = PasswordVisualTransformation())
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -153,7 +157,15 @@ fun PreferencesScreen(
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE5A173), // 🌅 blush arena atardecer
+                        contentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(16.dp),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 6.dp)
                 ) {
                     Text("Guardar cambios")
                 }

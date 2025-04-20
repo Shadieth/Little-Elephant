@@ -61,6 +61,49 @@ fun RegisterScreen(navController: NavHostController? = null) {
 
     var registrationSuccessBoolean by remember { mutableStateOf(false) }
 
+    fun validarRegistro(
+        firstName: String,
+        lastName: String,
+        birthDate: String,
+        gender: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ): String? {
+        if (firstName.isBlank() || lastName.isBlank() || birthDate.isBlank() ||
+            gender.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()
+        ) {
+            return "Todos los campos son obligatorios."
+        }
+
+        val fechaRegex = Regex("^\\d{4}-\\d{2}-\\d{2}$")
+        if (!birthDate.matches(fechaRegex)) {
+            return "La fecha debe tener el formato AAAA-MM-DD."
+        }
+
+        try {
+            val partes = birthDate.split("-")
+            val month = partes[1].toInt()
+            val day = partes[2].toInt()
+
+            if (month !in 1..12) return "El mes debe estar entre 01 y 12."
+            if (day !in 1..31) return "El día debe estar entre 01 y 31."
+        } catch (e: Exception) {
+            return "Fecha inválida."
+        }
+
+        if (password != confirmPassword) {
+            return "Las contraseñas no coinciden."
+        }
+
+        val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
+        if (!email.matches(emailRegex)) {
+            return "Correo electrónico no válido."
+        }
+
+        return null
+    }
+
     Scaffold(
         topBar = {
             Box(
@@ -371,11 +414,18 @@ fun RegisterScreen(navController: NavHostController? = null) {
                 // Botón para crear cuenta
                 Button(
                     onClick = {
-                        if (firstName.isBlank() || lastName.isBlank() || birthDate.isBlank() ||
-                            selectedGender.isBlank() || email.isBlank() || password.isBlank() ||
-                            confirmPassword.isBlank() || password != confirmPassword
-                        ) {
-                            Toast.makeText(context, "Por favor, complete todos los campos correctamente.", Toast.LENGTH_SHORT).show()
+                        val error = validarRegistro(
+                            firstName,
+                            lastName,
+                            birthDate,
+                            selectedGender,
+                            email,
+                            password,
+                            confirmPassword
+                        )
+
+                        if (error != null) {
+                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                         } else {
                             val request = RegisterRequest(
                                 firstName = firstName,
@@ -386,9 +436,9 @@ fun RegisterScreen(navController: NavHostController? = null) {
                                 password = password
                             )
                             userViewModel.registerUser(request)
-
                             registrationSuccessBoolean = true
                         }
+
                         if (registrationSuccessBoolean) {
                             // Navegar a la pantalla de éxito del registro y eliminar la pantalla de registro del stack
                             navController?.navigate("registration_success") {

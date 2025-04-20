@@ -7,9 +7,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.DoneOutline
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -98,17 +100,45 @@ fun EcosystemsScreen(
         },
         bottomBar = {
             BottomAppBar(
-                containerColor = BlueOne,
-                actions = {
-                    IconButton(onClick = { navController.navigate("login_screen") }) {
-                        Icon(Icons.Default.Home, contentDescription = "Inicio")
+                containerColor = BlueOne
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {IconButton(onClick = { navController.navigate("preferences_screen") }) {
+                    Icon(
+                        imageVector = Icons.Default.AccountCircle,
+                        contentDescription = "Ajustes",
+                        tint = Color.White
+                    )
+                }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    IconButton(onClick = { navController.navigate("preferences_screen") }) {
+                        Icon(imageVector = Icons.Default.DoneOutline,
+                            contentDescription = "Idioma",
+                            tint = Color.White
+
+                        )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     IconButton(onClick = { navController.navigate("preferences_screen") }) {
-                        Icon(Icons.Default.Settings, contentDescription = "Ajustes")
+                        Icon(imageVector = Icons.Default.Language,
+                            contentDescription = "Idioma",
+                            tint = Color.White
+
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    IconButton(onClick = { navController.navigate("login_screen") }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ExitToApp,
+                            contentDescription = "Salir",
+                            tint = Color.White
+                        )
                     }
                 }
-            )
+            }
         }
     ) { innerPadding ->
         LazyColumn(
