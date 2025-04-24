@@ -11,4 +11,6 @@ sealed class AppScreens(val route: String) {
     object QuestionScreen : AppScreens("question_screen/{ecosystemName}") {
         fun createRoute(ecosystemName: String) = "question_screen/$ecosystemName"
     }
+
+    object ProgressScreen : AppScreens("progress_screen")
 }

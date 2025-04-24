@@ -228,7 +228,7 @@ fun RegisterScreen(navController: NavHostController? = null) {
                     value = birthDate,
                     onValueChange = { birthDate = it },
                     label = { Text("Fecha de Nacimiento (AAAA-MM-DD)") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(

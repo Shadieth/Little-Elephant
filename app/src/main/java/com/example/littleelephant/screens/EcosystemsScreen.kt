@@ -114,7 +114,7 @@ fun EcosystemsScreen(
                     )
                 }
                     Spacer(modifier = Modifier.width(16.dp))
-                    IconButton(onClick = { navController.navigate("preferences_screen") }) {
+                    IconButton(onClick = { navController.navigate("progress_screen") }) {
                         Icon(imageVector = Icons.Default.DoneOutline,
                             contentDescription = "Idioma",
                             tint = Color.White

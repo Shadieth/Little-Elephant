@@ -10,6 +10,8 @@ import com.example.littleelephant.screens.LoginScreen
 import com.example.littleelephant.screens.PreferencesScreen
 import com.example.littleelephant.screens.QuestionFlowScreen
 import com.example.littleelephant.screens.RegisterScreen
+import com.example.littleelephant.screens.ProgressScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun AppNavigation() {
@@ -35,6 +37,12 @@ fun AppNavigation() {
             QuestionFlowScreen(navController = navController, ecosystemName = ecosystemName)
         }
 
+        composable(AppScreens.ProgressScreen.route) {
+            ProgressScreen(
+                navController = navController,
+                viewModel = viewModel()
+            )
+        }
     }
 }
 

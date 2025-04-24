@@ -152,7 +152,7 @@ fun FinishedScreen(onBackToLevels: () -> Unit) {
                 )
             ) {
                 Text(
-                    text = "Volver a los niveles",
+                    text = "Volver a los ecosistemas",
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -242,7 +242,7 @@ fun RetryScreen(
             }
 
 
-            // Botón Volver a niveles
+            // Botón Volver a los ecosistemas
             val blueBlushBrush = Brush.horizontalGradient(
                 colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45)) // tonos azules aesthetic
             )
@@ -263,7 +263,7 @@ fun RetryScreen(
                 )
             ) {
                 Text(
-                    text = "Volver a los niveles",
+                    text = "Volver a los ecosistemas",
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,

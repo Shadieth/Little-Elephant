@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -25,7 +24,9 @@ import com.example.littleelephant.apiRest.UserViewModel
 import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.apiRest.UpdateUserRequest
 import android.widget.Toast
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.Alignment
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,10 +46,9 @@ fun PreferencesScreen(
             Color(0xFFF1D8CE)
         )
     )
-    val blushColorArenaAtardecer = Color(0xFFF3D2B8) // tono arena suave con toque cálido
+    val blushColorArenaAtardecer = Color(0xFFF3D2B8)
+    val scrollState = rememberScrollState()
 
-
-    // Campos editables
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var birthDate by remember { mutableStateOf("") }
@@ -58,12 +58,10 @@ fun PreferencesScreen(
     val genderOptions = listOf("male", "female", "other")
     var expanded by remember { mutableStateOf(false) }
 
-    // Cargar datos al iniciar
     LaunchedEffect(email) {
         email?.let { viewModel.fetchUserByEmailForProfile(it) }
     }
 
-    // Actualizar los campos cuando llegan los datos
     LaunchedEffect(userData) {
         println("🧩 Recibido userData: $userData")
         userData?.let {
@@ -92,6 +90,7 @@ fun PreferencesScreen(
                 modifier = Modifier
                     .padding(paddingValues)
                     .fillMaxSize()
+                    .verticalScroll(scrollState)
                     .background(brush = beachSunsetBrush)
                     .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -161,7 +160,7 @@ fun PreferencesScreen(
                         .fillMaxWidth()
                         .height(50.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFE5A173), // 🌅 blush arena atardecer
+                        containerColor = Color(0xFFE5A173),
                         contentColor = Color.Black
                     ),
                     shape = RoundedCornerShape(16.dp),
@@ -183,11 +182,6 @@ fun PreferencesScreen(
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewPreferencesScreen() {
-    PreferencesScreen()
-}
 
 
 
