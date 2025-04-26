@@ -55,12 +55,6 @@ fun RegisterScreen(navController: NavHostController? = null) {
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
 
-    // Observar los resultados de LiveData desde el ViewModel
-    val registrationSuccess by userViewModel.registrationSuccess.observeAsState()
-    val registrationError by userViewModel.registrationError.observeAsState()
-
-    var registrationSuccessBoolean by remember { mutableStateOf(false) }
-
     fun validarRegistro(
         firstName: String,
         lastName: String,
@@ -176,7 +170,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -204,7 +201,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -233,7 +233,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -268,7 +271,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, enabled = true)
+                            .menuAnchor(
+                                ExposedDropdownMenuAnchorType.PrimaryEditable,
+                                enabled = true
+                            )
                     ) {
                         TextField(
                             value = selectedGender,
@@ -304,7 +310,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         modifier = Modifier
                             .background(
                                 brush = Brush.verticalGradient(
-                                    listOf(Color(0xFFC5687D), Color(0xFFCE6F83)) // Degradado oscuro futurista
+                                    listOf(
+                                        Color(0xFFC5687D),
+                                        Color(0xFFCE6F83)
+                                    ) // Degradado oscuro futurista
                                 )
                             )
                     ) {
@@ -331,7 +340,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -361,7 +373,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -391,7 +406,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .fillMaxWidth()
                         .background(
                             brush = Brush.verticalGradient(
-                                listOf(Color(0xFF222831), Color(0xFF393E46)) // Degradado oscuro futurista
+                                listOf(
+                                    Color(0xFF222831),
+                                    Color(0xFF393E46)
+                                ) // Degradado oscuro futurista
                             ),
                             shape = RoundedCornerShape(16.dp) // Bordes más redondeados
                         ),
@@ -435,18 +453,19 @@ fun RegisterScreen(navController: NavHostController? = null) {
                                 email = email,
                                 password = password
                             )
-                            userViewModel.registerUser(request)
-                            registrationSuccessBoolean = true
-                        }
 
-                        if (registrationSuccessBoolean) {
-                            // Navegar a la pantalla de éxito del registro y eliminar la pantalla de registro del stack
-                            navController?.navigate("registration_success") {
-                                // Elimina la pantalla de registro para que el usuario no pueda volver atrás
-                                popUpTo("register") { inclusive = true }
-                                // Evita que se agregue la pantalla de éxito al stack de navegación
-                                launchSingleTop = true
-                            }
+                            userViewModel.registerUser(
+                                request = request,
+                                onSuccess = {
+                                    navController?.navigate("registration_success") {
+                                        popUpTo("register") { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onFailure = { errorMsg ->
+                                    Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                }
+                            )
                         }
                     },
                     modifier = Modifier
@@ -454,33 +473,23 @@ fun RegisterScreen(navController: NavHostController? = null) {
                         .background(
                             brush = Brush.linearGradient(
                                 listOf(
-                                    Color(0xFFAD4962), // Turquesa neón
+                                    Color(0xFFAD4962),
                                     ButtonColor
                                 )
                             ),
-                            shape = RoundedCornerShape(16.dp) // Bordes redondeados
+                            shape = RoundedCornerShape(16.dp)
                         )
                         .shadow(
-                            elevation = 8.dp, // Sombra con ligera elevación
-                            shape = RoundedCornerShape(16.dp), // Aseguramos que la sombra sigue el mismo radio de borde
-                            ambientColor = Color.Black.copy(alpha = 0.2f), // Color oscuro y leve
-                            spotColor = Color.Black.copy(alpha = 0.1f) // Sombra más suave en el punto de contacto
+                            elevation = 8.dp,
+                            shape = RoundedCornerShape(16.dp),
+                            ambientColor = Color.Black.copy(alpha = 0.2f),
+                            spotColor = Color.Black.copy(alpha = 0.1f)
                         ),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent // Fondo transparente para dejar ver el Brush
+                        containerColor = Color.Transparent
                     )
                 ) {
-                    Text("Crear Cuenta", color = Color.White) // Texto blanco para resaltar sobre el degradado
-                }
-
-
-                // Mostrar los mensajes de éxito o error
-                registrationSuccess?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                }
-
-                registrationError?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    Text("Crear Cuenta", color = Color.White)
                 }
             }
         }

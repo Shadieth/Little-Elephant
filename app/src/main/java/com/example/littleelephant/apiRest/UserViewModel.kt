@@ -29,12 +29,18 @@ class UserViewModel : ViewModel() {
     val loginError: LiveData<String?> get() = _loginError
 
     // Método para registrar usuario
-    fun registerUser(request: RegisterRequest) {
+    fun registerUser(
+        request: RegisterRequest,
+        onSuccess: () -> Unit,
+        onFailure: (String) -> Unit
+    ) {
         userRepository.registerUser(request) { result ->
             result.onSuccess {
                 _registrationSuccess.value = "Usuario registrado: ${it.firstName}"
+                onSuccess()
             }.onFailure {
                 _registrationError.value = "Error: ${it.message}"
+                onFailure(it.message ?: "Error desconocido")
             }
         }
     }

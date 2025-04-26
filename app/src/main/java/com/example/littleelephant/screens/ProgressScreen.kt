@@ -1,5 +1,9 @@
 package com.example.littleelephant.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,10 +13,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.littleelephant.R
@@ -31,17 +37,41 @@ fun ProgressScreen(
     val ecosystems by viewModel.ecosystems.collectAsState()
     val userData = viewModel.userData.value
 
-    // Cargar datos al iniciar
-    LaunchedEffect(Unit) {
+    var startAnimation by remember { mutableStateOf(false) }
+
+    // 🔥 Cargar datos siempre que entres en la pantalla
+    LaunchedEffect(key1 = email, key2 = true) {
         email?.let { viewModel.fetchUserByEmailForProfile(it) }
         viewModel.fetchAllEcosystems()
     }
 
     val totalLevels = ecosystems.size
-    val currentLevel = userData?.unlockedLevels?.size ?: 0
-    val progress = if (totalLevels > 0) currentLevel.toFloat() / totalLevels else 0f
-    val percentage = (progress * 100).toInt()
-    val hasCompletedAll = progress >= 1f
+    val unlockedLevelsCount = userData?.unlockedLevels?.size ?: 0
+
+    // 🚀 Progreso basado en niveles desbloqueados, incluyendo el inicial
+    val progress = if (totalLevels > 0) {
+        unlockedLevelsCount.toFloat() / totalLevels
+    } else {
+        0f
+    }
+    val percentage = (progress.coerceIn(0f, 1f) * 100).toInt()
+    val hasCompletedAll = unlockedLevelsCount == totalLevels
+
+    // 🎉 Lanzar animación sólo cuando has completado todo
+    LaunchedEffect(hasCompletedAll) {
+        if (hasCompletedAll) {
+            startAnimation = true
+        }
+    }
+
+    val scale by animateFloatAsState(
+        targetValue = if (startAnimation) 1.1f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "scaleSpringAnimation"
+    )
 
     Scaffold(
         topBar = {
@@ -82,7 +112,7 @@ fun ProgressScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    text = "$percentage% completado",
+                    text = "$percentage% desbloqueado",
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -93,17 +123,21 @@ fun ProgressScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(12.dp),
-                    color = Color(0xFF57c9da),
+                    color = if (hasCompletedAll) Color(0xFFB7FC5E) else Color(0xFF57c9da),
                     trackColor = Color(0xFFD9D9D9)
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (hasCompletedAll) {
+                AnimatedVisibility(visible = hasCompletedAll) {
                     Text(
-                        text = "🎉 ¡Felicidades! Has completado todos los ecosistemas.",
+                        text = "🎉 ¡Felicidades! Has desbloqueado todos los ecosistemas.",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFF395173)
+                        color = Color(0xFF395173),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .scale(scale),
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -119,5 +153,3 @@ fun ProgressScreen(
         }
     }
 }
-
-
