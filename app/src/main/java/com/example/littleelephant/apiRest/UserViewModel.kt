@@ -111,6 +111,24 @@ class UserViewModel : ViewModel() {
             }
         }
     }
+    fun deleteUser(
+        email: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val response = RetrofitClient.instance.deleteUserByEmail(email)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("No se pudo eliminar el usuario. Código: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                onError("Error al eliminar: ${e.message}")
+            }
+        }
+    }
 
 }
 

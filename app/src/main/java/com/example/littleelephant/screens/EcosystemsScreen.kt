@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
@@ -24,13 +25,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.littleelephant.apiRest.EcosystemViewModel
+import com.example.littleelephant.data.dataStore
 import com.example.littleelephant.naviagtion.AppScreens
 import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.ui.theme.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +45,10 @@ fun EcosystemsScreen(
 ) {
     val context = LocalContext.current
     val unlockedLevels = viewModel.unlockedLevels.value
+    val coroutineScope = rememberCoroutineScope()
+
+    var showLanguageMenu by remember { mutableStateOf(false) }
+    val blueBlushBrush = Brush.horizontalGradient(listOf(Color(0xFF2196F3), Color(0xFF21CBF3)))
 
     // Cargar niveles desbloqueados del usuario al iniciar
     LaunchedEffect(Unit) {
@@ -85,19 +94,32 @@ fun EcosystemsScreen(
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     IconButton(onClick = { navController.navigate(AppScreens.ProgressScreen.route) }) {
-                        Icon(
-                            imageVector = Icons.Default.DoneOutline,
-                            contentDescription = "Progreso",
-                            tint = Color.White
-                        )
+                        Icon(Icons.Default.DoneOutline, contentDescription = "Progreso", tint = Color.White)
                     }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    IconButton(onClick = { navController.navigate(AppScreens.PreferencesScreen.route) }) {
-                        Icon(
-                            imageVector = Icons.Default.Language,
-                            contentDescription = "Idioma",
-                            tint = Color.White
-                        )
+                    Box {
+                        IconButton(onClick = { showLanguageMenu = true }) {
+                            Icon(Icons.Default.Language, contentDescription = "Idioma", tint = Color.White)
+                        }
+                        DropdownMenu(expanded = showLanguageMenu, onDismissRequest = { showLanguageMenu = false }) {
+                            DropdownMenuItem(
+                                text = { Text("Español 🇪🇸") },
+                                onClick = {
+                                    coroutineScope.launch {
+                                        context.dataStore.edit { it[stringPreferencesKey("language")] = "es" }
+                                        showLanguageMenu = false
+                                    }
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("English 🇺🇸") },
+                                onClick = {
+                                    coroutineScope.launch {
+                                        context.dataStore.edit { it[stringPreferencesKey("language")] = "en" }
+                                        showLanguageMenu = false
+                                    }
+                                }
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     IconButton(onClick = { navController.navigate(AppScreens.LoginScreen.route) }) {

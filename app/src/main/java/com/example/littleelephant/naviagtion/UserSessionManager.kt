@@ -13,4 +13,10 @@ object UserSessionManager {
         return context.getSharedPreferences("user_data", Context.MODE_PRIVATE)
             .getString("email", null)
     }
+
+    fun clearSession(context: Context) {
+        val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.edit() { clear() }
+    }
+
 }

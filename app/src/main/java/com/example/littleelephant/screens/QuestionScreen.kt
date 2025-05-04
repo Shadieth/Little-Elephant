@@ -145,7 +145,47 @@ fun QuestionScreen(
                     Text("Siguiente")
                     Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Siguiente")
                 }
+                // Dentro del bloque if (selectedOption != null)
+                Spacer(modifier = Modifier.height(12.dp))
+
+                val blueBlushBrush = Brush.horizontalGradient(
+                    colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45))
+                )
             }
+
+            Spacer(modifier = Modifier.height(54.dp))
+
+            val blueBlushBrush = Brush.horizontalGradient(
+                colors = listOf(Color(0xFFCC2626), Color(0xFFC90808))
+            )
+
+            Button(
+                onClick = {
+                    navController?.navigate("ecosystems_screen") {
+                        popUpTo("question_screen") { inclusive = true }
+                    }
+                },
+                modifier = Modifier
+                    .width(100.dp)
+                    .height(32.dp)
+                    .shadow(2.dp, shape = RoundedCornerShape(30), clip = true)
+                    .background(brush = blueBlushBrush, shape = RoundedCornerShape(30)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                ),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Volver",
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                        color = Color.White
+                    )
+                )
+            }
+
         }
     }
 }

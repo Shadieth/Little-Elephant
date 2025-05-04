@@ -6,6 +6,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.DELETE
+import retrofit2.Response
 
 //Register request and response
 data class RegisterRequest(
@@ -108,4 +110,6 @@ interface ApiService {
         @Body request: UpdateUserRequest
     ): UserResponseUpdate
 
+    @DELETE("users/{email}")
+    suspend fun deleteUserByEmail(@Path("email") email: String): retrofit2.Response<Unit>
 }
