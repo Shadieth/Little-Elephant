@@ -29,7 +29,6 @@ import androidx.navigation.NavHostController
 import com.example.littleelephant.R
 import com.example.littleelephant.apiRest.RegisterRequest
 import com.example.littleelephant.apiRest.UserViewModel
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 
@@ -77,11 +76,13 @@ fun RegisterScreen(navController: NavHostController? = null) {
 
         try {
             val partes = birthDate.split("-")
+            val year = partes[0].toInt()
             val month = partes[1].toInt()
             val day = partes[2].toInt()
 
             if (month !in 1..12) return "El mes debe estar entre 01 y 12."
             if (day !in 1..31) return "El día debe estar entre 01 y 31."
+            if (year !in 1900..2100) return "El año debe ser válido."
         } catch (e: Exception) {
             return "Fecha inválida."
         }
@@ -95,7 +96,28 @@ fun RegisterScreen(navController: NavHostController? = null) {
             return "Correo electrónico no válido."
         }
 
-        return null
+        if (password.length < 6) {
+            return "La contraseña debe tener al menos 6 caracteres."
+        }
+
+        if (!password.any { it.isUpperCase() }) {
+            return "La contraseña debe contener al menos una letra mayúscula."
+        }
+
+        if (!password.any { it.isLowerCase() }) {
+            return "La contraseña debe contener al menos una letra minúscula."
+        }
+
+        if (!password.any { it.isDigit() }) {
+            return "La contraseña debe contener al menos un número."
+        }
+
+        val specialCharRegex = Regex("[^A-Za-z0-9]")
+        if (!specialCharRegex.containsMatchIn(password)) {
+            return "La contraseña debe contener al menos un carácter especial."
+        }
+
+        return null // Todo OK
     }
 
     Scaffold(

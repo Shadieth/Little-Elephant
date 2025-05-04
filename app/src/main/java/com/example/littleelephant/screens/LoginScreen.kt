@@ -114,7 +114,11 @@ fun BottomContainer(
                     fontWeight = FontWeight.Bold,
                 )
             )
+
             val usuario = remember { mutableStateOf(TextFieldValue()) }
+            var passwordState by remember { mutableStateOf(TextFieldState("")) }
+            var isPasswordVisible by remember { mutableStateOf(false) }
+            val context = LocalContext.current
 
             BasicTextField(
                 value = usuario.value,
@@ -148,9 +152,6 @@ fun BottomContainer(
                 cursorBrush = SolidColor(Color.White)
             )
 
-            var passwordState by remember { mutableStateOf(TextFieldState("")) }
-            var isPasswordVisible by remember { mutableStateOf(false) }
-
             OutlinedSecureTextField(
                 state = passwordState,
                 modifier = Modifier
@@ -178,16 +179,13 @@ fun BottomContainer(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(0.dp),
-                modifier = Modifier.padding(start = 0.dp, end = 0.dp, top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp)
             ) {
                 Text(
                     text = "¿No tienes cuenta? ",
                     color = Color.White,
                     fontSize = 18.sp,
-                    modifier = Modifier,
-                    textAlign = TextAlign.Center
                 )
-
                 Text(
                     text = "Crea una",
                     color = Color(0xFFFACDDD),
@@ -195,18 +193,32 @@ fun BottomContainer(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .clickable { navController.navigate("register_screen") }
-                        .padding(end = 0.dp),
-                    textAlign = TextAlign.Center
                 )
             }
 
             Button(
                 onClick = {
-                    val loginRequest = LoginRequest(
-                        email = usuario.value.text,
-                        password = passwordState.text.toString()
-                    )
-                    viewModel.loginUser(loginRequest)  // Llamada al ViewModel para el login
+                    val email = usuario.value.text.trim()
+                    val password = passwordState.text.toString().trim()
+
+                    when {
+                        email.isEmpty() || password.isEmpty() -> {
+                            Toast.makeText(context, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                        }
+
+                        !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                            Toast.makeText(context, "Introduce un email válido", Toast.LENGTH_SHORT).show()
+                        }
+
+                        password.length < 6 -> {
+                            Toast.makeText(context, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
+                        }
+
+                        else -> {
+                            val loginRequest = LoginRequest(email = email, password = password)
+                            viewModel.loginUser(loginRequest)
+                        }
+                    }
                 },
                 modifier = Modifier
                     .padding(top = 16.dp)
@@ -227,38 +239,28 @@ fun BottomContainer(
             }
 
             // Observando el resultado de login
-            val context = LocalContext.current
             val loginSuccess by viewModel.loginSuccess.observeAsState()
             val loginError by viewModel.loginError.observeAsState()
 
             // Manejo de la respuesta del login
             LaunchedEffect(loginSuccess) {
                 loginSuccess?.let {
-                    // Mostrar mensaje
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-
-                    // Guardar email del usuario logueado
                     UserSessionManager.saveEmail(context, usuario.value.text)
-
-                    // Navegar a la pantalla principal
                     navController.navigate("ecosystems_screen")
-
-                    // Limpiar estado para evitar repetición
                     viewModel.clearLoginState()
                 }
             }
 
             LaunchedEffect(loginError) {
                 loginError?.let {
-                    // Muestra un mensaje de error
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    viewModel.clearLoginState() // Limpia el estado después de mostrar el error
+                    viewModel.clearLoginState()
                 }
             }
         }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
