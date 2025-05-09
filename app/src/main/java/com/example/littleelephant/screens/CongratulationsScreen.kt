@@ -2,26 +2,13 @@ package com.example.littleelephant.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -46,107 +33,126 @@ import kotlinx.coroutines.flow.first
 fun CongratulationsScreen(onBackToHome: () -> Unit) {
 
     val context = LocalContext.current
-    var selectedLanguage by remember { mutableStateOf("es") }
-    var isTranslationLoaded by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
-        selectedLanguage = lang
-        TranslationManager.loadLanguage(context, lang)
-        isTranslationLoaded = true
+    // Variables mutables para los textos que se actualizan al cambiar el idioma.
+    var titleText by remember { mutableStateOf(TranslationManager.getString("congrats_title")) }
+    var messageText by remember { mutableStateOf(TranslationManager.getString("congrats_message")) }
+    var backHomeText by remember { mutableStateOf(TranslationManager.getString("back_home")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        titleText = TranslationManager.getString("congrats_title")
+        messageText = TranslationManager.getString("congrats_message")
+        backHomeText = TranslationManager.getString("back_home")
     }
 
-    if (isTranslationLoaded) {
-        val backgroundBrush = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFFE0F7FA), // azul agua claro
-                Color(0xFFF1F8E9), // verde pastel
-                Color(0xFFFFF3E0)  // crema cálido
-            )
-        )
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
 
-        val buttonGradient = Brush.horizontalGradient(
-            colors = listOf(
-                Color(0xFF5C5D83), // azul lavanda profundo
-                Color(0xFF6A6B96)  // lavanda suave brillante
-            )
+    /**
+     * Fondo degradado de la pantalla.
+     */
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFE0F7FA), // azul agua claro
+            Color(0xFFF1F8E9), // verde pastel
+            Color(0xFFFFF3E0)  // crema cálido
         )
+    )
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(brush = backgroundBrush)
-                .padding(32.dp),
-            contentAlignment = Alignment.Center
+    /**
+     * Degradado del botón.
+     */
+    val buttonGradient = Brush.horizontalGradient(
+        colors = listOf(
+            Color(0xFF5C5D83), // azul lavanda profundo
+            Color(0xFF6A6B96)  // lavanda suave brillante
+        )
+    )
+
+    // Estructura de la pantalla
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(brush = backgroundBrush)
+            .padding(32.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+
+            // Imagen de felicitaciones
+            Image(
+                painter = painterResource(id = R.drawable.elefanteconglobo),
+                contentDescription = "Felicitaciones",
+                modifier = Modifier.size(300.dp),
+                contentScale = ContentScale.Fit
+            )
+
+            // Título de felicitación
+            Text(
+                text = titleText,
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color(0xFF4A148C)
+            )
+
+            // Mensaje de felicitación
+            Text(
+                text = messageText,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center
+            )
+
+            // Botón "Volver a inicio"
+            Button(
+                onClick = onBackToHome,
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(200.dp)
+                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                ),
+                contentPadding = PaddingValues()
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.elefanteconglobo),
-                    contentDescription = "Felicitaciones",
+                Box(
                     modifier = Modifier
-                        .size(300.dp),
-                    contentScale = ContentScale.Fit
-                )
-
-                Text(
-                    text = TranslationManager.getString("congrats_title"),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = Color(0xFF4A148C) // púrpura elegante y vibrante
-                )
-
-                Text(
-                    text = TranslationManager.getString("congrats_message"),
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center
-                )
-
-                Button(
-                    onClick = onBackToHome,
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(200.dp)
-                        .shadow(4.dp, shape = RoundedCornerShape(50), clip = true),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent,
-                        contentColor = Color.White
-                    ),
-                    contentPadding = PaddingValues()
+                        .fillMaxSize()
+                        .background(
+                            brush = buttonGradient,
+                            shape = RoundedCornerShape(50)
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                brush = buttonGradient,
-                                shape = RoundedCornerShape(50)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = TranslationManager.getString("back_home"),
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
-                            )
+                    Text(
+                        text = backHomeText,
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
                         )
-                    }
+                    )
                 }
             }
         }
     }
 }
 
-
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CongratulationsScreenPreview() {
-    MaterialTheme {
-        CongratulationsScreen(onBackToHome = {})
-    }
+    CongratulationsScreen(onBackToHome = {})
 }
 
 

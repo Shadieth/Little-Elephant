@@ -7,10 +7,13 @@
   "username": "Username",
   "password": "Password",
   "no_account": "Don't have an account?",
-  "create_one": "Create one",
+  "create_one": " Create one",
   "login_button": "Login",
   "fill_all_fields": "Please fill in all the fields",
   "valid_email": "Enter a valid email",
   "password_min_length": "The password must be at least 6 characters long",
-  "login_error": "Incorrect username/password or user does not exist"
+  "login_error": "Incorrect username/password or user does not exist",
+  "spanish_text": "Spanish \uD83C\uDDEA\uD83C\uDDF8",
+  "english_text": "English \uD83C\uDDFA\uD83C\uDDF8"
 }
+

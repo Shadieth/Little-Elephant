@@ -5,15 +5,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.io.BufferedReader
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 object TranslationManager {
+
     private var translations: JSONObject? = null
 
-    private val _isTranslationLoaded = MutableStateFlow(false)
-    val isTranslationLoaded: StateFlow<Boolean> get() = _isTranslationLoaded
-
+    /**
+     * Cargar el idioma desde el archivo JSON
+     */
     suspend fun loadLanguage(context: Context, langCode: String) {
         val fileName = when (langCode) {
             "en" -> "strings_en.json"
@@ -27,13 +26,17 @@ object TranslationManager {
         }
 
         translations = JSONObject(jsonString)
-        _isTranslationLoaded.value = true
     }
 
+    /**
+     * Obtener un texto traducido
+     */
     fun getString(key: String): String {
         return translations?.optString(key) ?: key
     }
 }
+
+
 
 
 
