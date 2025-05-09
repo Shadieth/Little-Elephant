@@ -1,0 +1,16 @@
+{
+  "title_ecosystems": "Ecosystems",
+  "congrats_title": "🎉 Congratulations!",
+  "congrats_message": "You have completed all ecosystems 🌎",
+  "back_home": "Back to Home",
+  "app_name": "Little Elephant",
+  "username": "Username",
+  "password": "Password",
+  "no_account": "Don't have an account?",
+  "create_one": "Create one",
+  "login_button": "Login",
+  "fill_all_fields": "Please fill in all the fields",
+  "valid_email": "Enter a valid email",
+  "password_min_length": "The password must be at least 6 characters long",
+  "login_error": "Incorrect username/password or user does not exist"
+}

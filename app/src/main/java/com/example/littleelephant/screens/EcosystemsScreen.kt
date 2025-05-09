@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
@@ -31,11 +30,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.littleelephant.apiRest.EcosystemViewModel
+import com.example.littleelephant.data.TranslationManager
 import com.example.littleelephant.data.dataStore
 import com.example.littleelephant.naviagtion.AppScreens
 import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.ui.theme.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +49,26 @@ fun EcosystemsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var showLanguageMenu by remember { mutableStateOf(false) }
-    val blueBlushBrush = Brush.horizontalGradient(listOf(Color(0xFF2196F3), Color(0xFF21CBF3)))
+    var selectedLanguage by remember { mutableStateOf("es") }
+
+// Estado que forzará la recomposición al cambiar
+    var recompositionTrigger by remember { mutableStateOf(false) }
+
+    // Cargar el idioma inicial
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        selectedLanguage = lang
+        TranslationManager.loadLanguage(context, lang)
+    }
+
+    // Función para cambiar el idioma y forzar la recomposición
+    fun changeLanguage(lang: String) {
+        coroutineScope.launch {
+            context.dataStore.edit { it[stringPreferencesKey("language")] = lang }
+            TranslationManager.loadLanguage(context, lang)
+            recompositionTrigger = !recompositionTrigger // Forzar la recomposición
+        }
+    }
 
     // Cargar niveles desbloqueados del usuario al iniciar
     LaunchedEffect(Unit) {
@@ -63,7 +83,7 @@ fun EcosystemsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ecosistemas", color = Color.White, fontWeight = FontWeight.Bold) },
+                title = { Text(TranslationManager.getString("title_ecosystems"), color = Color.White, fontWeight = FontWeight.Bold) },
                 actions = {
                     IconButton(onClick = {}) {
                         AsyncImage(
@@ -105,7 +125,7 @@ fun EcosystemsScreen(
                                 text = { Text("Español 🇪🇸") },
                                 onClick = {
                                     coroutineScope.launch {
-                                        context.dataStore.edit { it[stringPreferencesKey("language")] = "es" }
+                                        changeLanguage("es")
                                         showLanguageMenu = false
                                     }
                                 }
@@ -114,7 +134,7 @@ fun EcosystemsScreen(
                                 text = { Text("English 🇺🇸") },
                                 onClick = {
                                     coroutineScope.launch {
-                                        context.dataStore.edit { it[stringPreferencesKey("language")] = "en" }
+                                        changeLanguage("en")
                                         showLanguageMenu = false
                                     }
                                 }
@@ -210,6 +230,7 @@ fun EcosystemsScreen(
         }
     }
 }
+
 
 
 

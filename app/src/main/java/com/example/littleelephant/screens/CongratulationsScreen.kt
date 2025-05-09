@@ -17,12 +17,18 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,90 +36,110 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.littleelephant.R
+import com.example.littleelephant.data.TranslationManager
+import com.example.littleelephant.data.dataStore
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun CongratulationsScreen(onBackToHome: () -> Unit) {
-    val backgroundBrush = Brush.verticalGradient(
-        colors = listOf(
-            Color(0xFFE0F7FA), // azul agua claro
-            Color(0xFFF1F8E9), // verde pastel
-            Color(0xFFFFF3E0)  // crema cálido
-        )
-    )
 
-    val buttonGradient = Brush.horizontalGradient(
-        colors = listOf(
-            Color(0xFF5C5D83), // azul lavanda profundo
-            Color(0xFF6A6B96)  // lavanda suave brillante
-        )
-    )
+    val context = LocalContext.current
+    var selectedLanguage by remember { mutableStateOf("es") }
+    var isTranslationLoaded by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(brush = backgroundBrush)
-            .padding(32.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        selectedLanguage = lang
+        TranslationManager.loadLanguage(context, lang)
+        isTranslationLoaded = true
+    }
+
+    if (isTranslationLoaded) {
+        val backgroundBrush = Brush.verticalGradient(
+            colors = listOf(
+                Color(0xFFE0F7FA), // azul agua claro
+                Color(0xFFF1F8E9), // verde pastel
+                Color(0xFFFFF3E0)  // crema cálido
+            )
+        )
+
+        val buttonGradient = Brush.horizontalGradient(
+            colors = listOf(
+                Color(0xFF5C5D83), // azul lavanda profundo
+                Color(0xFF6A6B96)  // lavanda suave brillante
+            )
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(brush = backgroundBrush)
+                .padding(32.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.elefanteconglobo),
-                contentDescription = "Felicitaciones",
-                modifier = Modifier
-                    .size(300.dp),
-                contentScale = ContentScale.Fit
-            )
-
-            Text(
-                text = "🎉 ¡Felicidades!",
-                style = MaterialTheme.typography.headlineLarge,
-                color = Color(0xFF4A148C) // púrpura elegante y vibrante
-            )
-
-            Text(
-                text = "Has completado todos los ecosistemas 🌎",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
-            )
-
-            Button(
-                onClick = onBackToHome,
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(200.dp)
-                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent,
-                    contentColor = Color.White
-                ),
-                contentPadding = PaddingValues()
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Box(
+                Image(
+                    painter = painterResource(id = R.drawable.elefanteconglobo),
+                    contentDescription = "Felicitaciones",
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = buttonGradient,
-                            shape = RoundedCornerShape(50)
-                        ),
-                    contentAlignment = Alignment.Center
+                        .size(300.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                Text(
+                    text = TranslationManager.getString("congrats_title"),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = Color(0xFF4A148C) // púrpura elegante y vibrante
+                )
+
+                Text(
+                    text = TranslationManager.getString("congrats_message"),
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+
+                Button(
+                    onClick = onBackToHome,
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(200.dp)
+                        .shadow(4.dp, shape = RoundedCornerShape(50), clip = true),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.White
+                    ),
+                    contentPadding = PaddingValues()
                 ) {
-                    Text(
-                        text = "Volver al inicio",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                brush = buttonGradient,
+                                shape = RoundedCornerShape(50)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = TranslationManager.getString("back_home"),
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable

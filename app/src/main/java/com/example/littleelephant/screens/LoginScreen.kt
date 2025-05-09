@@ -51,20 +51,38 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.littleelephant.R
 import com.example.littleelephant.apiRest.LoginRequest
 import com.example.littleelephant.apiRest.UserViewModel
+import com.example.littleelephant.data.TranslationManager
+import com.example.littleelephant.data.dataStore
 import com.example.littleelephant.naviagtion.UserSessionManager
 import com.example.littleelephant.ui.theme.LittleElephantTheme
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun LoginScreen(navController: NavController, viewModel: UserViewModel = viewModel()) {
-    Scaffold {
-        LittleElephantTheme {
-            Content(modifier = Modifier.padding(it).background(color = Color(0xFFFACDDD)), navController, viewModel)
+
+    val context = LocalContext.current
+    var selectedLanguage by remember { mutableStateOf("es") }
+    var isTranslationLoaded by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        selectedLanguage = lang
+        TranslationManager.loadLanguage(context, lang)
+        isTranslationLoaded = true
+    }
+
+    if (isTranslationLoaded){
+        Scaffold {
+            LittleElephantTheme {
+                Content(modifier = Modifier.padding(it).background(color = Color(0xFFFACDDD)), navController, viewModel)
+            }
         }
     }
 }
@@ -103,7 +121,7 @@ fun BottomContainer(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Little Elephant",
+                text = TranslationManager.getString("app_name"),
                 color = Color(0xFFFACDDD),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -141,7 +159,7 @@ fun BottomContainer(
                     ) {
                         if (usuario.value.text.isEmpty()) {
                             Text(
-                                text = "Usuario",
+                                text = TranslationManager.getString("username"),
                                 style = TextStyle(color = Color.White, fontSize = 22.sp)
                             )
                         }
@@ -158,7 +176,14 @@ fun BottomContainer(
                     .height(85.dp)
                     .fillMaxWidth(0.8f)
                     .padding(vertical = 8.dp),
-                label = { Text("Contraseña", color = Color.White, fontSize = 22.sp, lineHeight = 28.sp) },
+                label = {
+                        Text(
+                        text = TranslationManager.getString("password"),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        lineHeight = 28.sp
+                     )
+                },
                 trailingIcon = {
                     IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                         val icon = if (isPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -182,12 +207,12 @@ fun BottomContainer(
                 modifier = Modifier.padding(top = 4.dp)
             ) {
                 Text(
-                    text = "¿No tienes cuenta? ",
+                    text = TranslationManager.getString("no_account"),
                     color = Color.White,
                     fontSize = 18.sp,
                 )
                 Text(
-                    text = "Crea una",
+                    text = TranslationManager.getString("create_one"),
                     color = Color(0xFFFACDDD),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -203,15 +228,15 @@ fun BottomContainer(
 
                     when {
                         email.isEmpty() || password.isEmpty() -> {
-                            Toast.makeText(context, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, TranslationManager.getString("fill_all_fields"), Toast.LENGTH_SHORT).show()
                         }
 
                         !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                            Toast.makeText(context, "Introduce un email válido", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, TranslationManager.getString("valid_email"), Toast.LENGTH_SHORT).show()
                         }
 
                         password.length < 6 -> {
-                            Toast.makeText(context, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, TranslationManager.getString("password_min_length"), Toast.LENGTH_SHORT).show()
                         }
 
                         else -> {
@@ -231,7 +256,7 @@ fun BottomContainer(
                 )
             ) {
                 Text(
-                    text = "Iniciar",
+                    text = TranslationManager.getString("login_button"),
                     fontSize = 22.sp,
                     color = Color.White,
                     fontWeight = FontWeight.Bold
@@ -254,7 +279,7 @@ fun BottomContainer(
 
             LaunchedEffect(loginError) {
                 loginError?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, TranslationManager.getString("login_error"), Toast.LENGTH_SHORT).show()
                     viewModel.clearLoginState()
                 }
             }
