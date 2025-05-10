@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
@@ -184,7 +185,15 @@ fun EcosystemsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .background(color = Color(0xFFF4F2F2))
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFFDECAC7),   // Beige más claro
+                            Color(0xFFD5BFBC),  // Beige claro
+                            Color(0xFFBBA19D)  // Marrón oscuro
+                        )
+                    )
+                )
         ) {
             itemsIndexed(ecosystems) { index, ecosystem ->
                 val isUnlocked = (index + 1) in unlockedLevels

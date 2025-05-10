@@ -14,12 +14,18 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,15 +37,42 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.littleelephant.data.TranslationManager
+import com.example.littleelephant.data.dataStore
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun RegistrationSuccessScreen(navController: NavController) {
 
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp // Obtiene la altura de la pantalla
-    val imageHeight = screenHeight * 0.4f // Establece el porcentaje del tamaño de la pantalla para la imagen
+    val context = LocalContext.current
+
+    // --- VARIABLES DE TEXTO (TRADUCCIÓN) ---
+    var registrationSuccessText by remember { mutableStateOf(TranslationManager.getString("registration_success")) }
+    var loginText by remember { mutableStateOf(TranslationManager.getString("login")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        registrationSuccessText = TranslationManager.getString("registration_success")
+        loginText = TranslationManager.getString("login")
+    }
+
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
+
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val imageHeight = screenHeight * 0.4f
 
     val courgetteFont = FontFamily(
-        Font(R.font.courgetteregular) // Usando el archivo Courgette-Regular.ttf
+        Font(R.font.courgetteregular)
     )
 
     Box(
@@ -47,46 +80,41 @@ fun RegistrationSuccessScreen(navController: NavController) {
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFFC5CAE9), Color(0xFFE1BEE7), Color(0xFFFCE4EC)) // Fondo rosa con gradiente
+                    colors = listOf(Color(0xFFC5CAE9), Color(0xFFE1BEE7), Color(0xFFFCE4EC))
                 )
             )
     ) {
-        // Contenido principal, centrado
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
-                .align(Alignment.Center)
-            ,
+                .align(Alignment.Center),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Texto en la parte superior
+
             Text(
-                text = "Usuario creado correctamente ✅",
+                text = registrationSuccessText,
                 style = TextStyle(
-                    fontFamily = courgetteFont, // Aplica la fuente Courgette Regular
+                    fontFamily = courgetteFont,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 22.sp, // Tamaño de la fuente
-                    color = Color(0xFF616583), // Color del texto
+                    fontSize = 22.sp,
+                    color = Color(0xFF616583),
                 ),
                 modifier = Modifier
                     .padding(bottom = 16.dp)
-                    .padding(12.dp), // Añadimos un padding para separar el texto del borde
-
+                    .padding(12.dp),
             )
 
-            // Imagen centrada, ajustada al tamaño de la pantalla
             Image(
-                painter = painterResource(id = R.drawable.elefantegirl), // Reemplaza 'elefantegirl' con el nombre de tu imagen
+                painter = painterResource(id = R.drawable.elefantegirl),
                 contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()  // La imagen ocupará todo el ancho
-                    .height(imageHeight)  // Ajusta la altura de la imagen al 40% de la altura de la pantalla
-                    .padding(bottom = 32.dp) // Añade espacio debajo de la imagen
+                    .fillMaxWidth()
+                    .height(imageHeight)
+                    .padding(bottom = 32.dp)
             )
 
-            // Botón de "Iniciar sesión"
             Button(
                 onClick = {
                     navController.navigate("login_screen") {
@@ -94,25 +122,26 @@ fun RegistrationSuccessScreen(navController: NavController) {
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent, // Lo dejamos transparente para aplicar el brush
+                    containerColor = Color.Transparent,
                     contentColor = Color(0xFFD7E9ED)
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 32.dp)
-                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true) // Agregar sombra
+                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true)
                     .background(
-                        brush = Brush.horizontalGradient( // Gradiente horizontal para el fondo
+                        brush = Brush.horizontalGradient(
                             colors = listOf(Color(0xFF696D8A), Color(0xFF616583))
                         ),
-                        shape = RoundedCornerShape(50) // Redondeamos el botón
+                        shape = RoundedCornerShape(50)
                     )
             ) {
-                Text(text = "Iniciar sesión",
+                Text(
+                    text = loginText,
                     style = TextStyle(
-                        fontSize = 18.sp, // Tamaño de la fuente
-                        fontWeight = FontWeight.Bold, // Hacer el texto en negrita
-                        color = Color.White // Color del texto
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
                 )
             }
