@@ -9,26 +9,20 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 class UserViewModel : ViewModel() {
 
     private val userRepository = UserRepository()
 
-    // Variables para la gestión del registro
+    // --- REGISTRO ---
+
     private val _registrationSuccess = MutableLiveData<String>()
     val registrationSuccess: LiveData<String> get() = _registrationSuccess
 
     private val _registrationError = MutableLiveData<String>()
     val registrationError: LiveData<String> get() = _registrationError
 
-    // Variables para la gestión del login
-    private val _loginSuccess = MutableLiveData<String?>()
-    val loginSuccess: LiveData<String?> get() = _loginSuccess
-
-    private val _loginError = MutableLiveData<String?>()
-    val loginError: LiveData<String?> get() = _loginError
-
-    // Método para registrar usuario
     fun registerUser(
         request: RegisterRequest,
         onSuccess: () -> Unit,
@@ -39,33 +33,44 @@ class UserViewModel : ViewModel() {
                 _registrationSuccess.value = "Usuario registrado: ${it.firstName}"
                 onSuccess()
             }.onFailure {
-                _registrationError.value = "Error: ${it.message}"
+                val errorMessage = "Error al registrar: ${it.message}"
+                println(errorMessage)
+                _registrationError.value = errorMessage
                 onFailure(it.message ?: "Error desconocido")
             }
         }
     }
 
-    // Método para iniciar sesión
+    // --- LOGIN ---
+
+    private val _loginSuccess = MutableLiveData<String?>()
+    val loginSuccess: LiveData<String?> get() = _loginSuccess
+
+    private val _loginError = MutableLiveData<String?>()
+    val loginError: LiveData<String?> get() = _loginError
+
     fun loginUser(request: LoginRequest) {
         userRepository.loginUser(request) { result ->
             result.onSuccess { loginResponse ->
-                // Ahora loginResponse es un booleano
                 if (loginResponse.success) {
                     _loginSuccess.value = "Inicio de sesión exitoso"
                 } else {
                     _loginError.value = "Credenciales incorrectas"
                 }
             }.onFailure { exception ->
-                _loginError.value = "Error: ${exception.message}"
+                val errorMessage = "Error al iniciar sesión: ${exception.message}"
+                println(errorMessage)
+                _loginError.value = errorMessage
             }
         }
     }
 
-    // Limpiar estado del login
     fun clearLoginState() {
         _loginSuccess.value = null
         _loginError.value = null
     }
+
+    // --- PERFIL DE USUARIO ---
 
     val userData = mutableStateOf<UserResponseUpdate?>(null)
 
@@ -76,7 +81,9 @@ class UserViewModel : ViewModel() {
                 Log.d("UserViewModel", "Perfil cargado: $response")
                 userData.value = response
             } catch (e: Exception) {
-                Log.e("UserViewModel", "Error al obtener perfil", e)
+                val errorMessage = "Error al obtener perfil: ${e.message}"
+                println(errorMessage)
+                Log.e("UserViewModel", errorMessage)
             }
         }
     }
@@ -92,25 +99,39 @@ class UserViewModel : ViewModel() {
                 RetrofitClient.instance.updateUser(email, request)
                 onSuccess()
             } catch (e: Exception) {
-                onError(e.message ?: "Error desconocido")
+                val errorMessage = "Error al actualizar perfil: ${e.message}"
+                println(errorMessage)
+                onError(errorMessage)
             }
         }
     }
 
-    // Ecosistemas obtenidos desde el backend
-    private val _ecosystems = MutableStateFlow<List<Ecosystem>>(emptyList())
-    val ecosystems: StateFlow<List<Ecosystem>> = _ecosystems
+    // --- GESTIÓN DE USUARIOS ---
 
-    fun fetchAllEcosystems() {
+    fun checkUserExists(
+        email: String,
+        onResult: (Boolean) -> Unit,
+        onError: (String) -> Unit = {}
+    ) {
         viewModelScope.launch {
             try {
-                val result = RetrofitClient.instance.getEcosystems()
-                _ecosystems.value = result
+                val response = RetrofitClient.instance.checkUserExists(email)
+                println("Respuesta del backend: $response")
+
+                // Accedemos directamente al valor de "exists"
+                val userExists = response["exists"] ?: false
+                onResult(userExists)
+
+            } catch (e: HttpException) {
+                println("Error HTTP: ${e.code()} - ${e.message()}")
+                onError("Error al verificar usuario: ${e.message()}")
             } catch (e: Exception) {
-                println("Error al obtener ecosistemas: ${e.message}")
+                println("Error general: ${e.message}")
+                onError("Error al verificar usuario: ${e.message}")
             }
         }
     }
+
     fun deleteUser(
         email: String,
         onSuccess: () -> Unit,
@@ -122,14 +143,34 @@ class UserViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     onSuccess()
                 } else {
-                    onError("No se pudo eliminar el usuario. Código: ${response.code()}")
+                    val errorMessage = "No se pudo eliminar el usuario. Código: ${response.code()}"
+                    println(errorMessage)
+                    onError(errorMessage)
                 }
             } catch (e: Exception) {
-                onError("Error al eliminar: ${e.message}")
+                val errorMessage = "Error al eliminar usuario: ${e.message}"
+                println(errorMessage)
+                onError(errorMessage)
             }
         }
     }
 
+    // --- GESTIÓN DE ECOSISTEMAS ---
+
+    private val _ecosystems = MutableStateFlow<List<Ecosystem>>(emptyList())
+    val ecosystems: StateFlow<List<Ecosystem>> = _ecosystems
+
+    fun fetchAllEcosystems() {
+        viewModelScope.launch {
+            try {
+                val result = RetrofitClient.instance.getEcosystems()
+                _ecosystems.value = result
+            } catch (e: Exception) {
+                val errorMessage = "Error al obtener ecosistemas: ${e.message}"
+                println(errorMessage)
+            }
+        }
+    }
 }
 
 

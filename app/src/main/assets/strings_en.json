@@ -15,7 +15,7 @@
   "login_error": "Incorrect username/password or user does not exist",
   "spanish_text": "Spanish \uD83C\uDDEA\uD83C\uDDF8",
   "english_text": "English \uD83C\uDDFA\uD83C\uDDF8",
-  "preferences_title": "Preferences",
+  "profile_title": "My Profile",
   "first_name": "First Name",
   "last_name": "Last Name",
   "birth_date": "Birth Date (YYYY-MM-DD)",
@@ -78,6 +78,9 @@
   "male": "Male",
   "female": "Female",
   "other": "Other",
-  "update_success": "Profile successfully updated ✅"
+  "update_success": "Profile successfully updated ✅",
+  "first_name_min_length": "The first name must be at least 2 characters long.",
+  "last_name_min_length": "The last name must be at least 2 characters long.",
+  "user_exists": "The user is already registered."
 }
 

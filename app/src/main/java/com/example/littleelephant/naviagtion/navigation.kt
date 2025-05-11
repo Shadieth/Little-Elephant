@@ -4,7 +4,7 @@ sealed class AppScreens(val route: String) {
     object LoginScreen : AppScreens("login_screen")
     object EcosystemsScreen : AppScreens("ecosystems_screen")
     object RegisterScreen : AppScreens("register_screen")
-    object PreferencesScreen : AppScreens("preferences_screen")
+    object ProfileScreen : AppScreens("profile_screen")
     object RegistrationSuccess : AppScreens("registration_success")
 
     // Pantalla de preguntas, con nombre del ecosistema como parámetro

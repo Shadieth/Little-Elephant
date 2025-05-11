@@ -80,6 +80,10 @@ fun RegisterScreen(navController: NavHostController? = null) {
     var maleText by remember { mutableStateOf(TranslationManager.getString("male")) }
     var femaleText by remember { mutableStateOf(TranslationManager.getString("female")) }
     var otherText by remember { mutableStateOf(TranslationManager.getString("other")) }
+    var firstNameMinLengthText by remember { mutableStateOf(TranslationManager.getString("first_name_min_length")) }
+    var lastNameMinLengthText by remember { mutableStateOf(TranslationManager.getString("last_name_min_length")) }
+    var userExistsText by remember { mutableStateOf(TranslationManager.getString("user_exists")) }
+
 
     /**
      * Función para actualizar los textos según el idioma seleccionado.
@@ -109,6 +113,9 @@ fun RegisterScreen(navController: NavHostController? = null) {
         maleText = TranslationManager.getString("male")
         femaleText = TranslationManager.getString("female")
         otherText = TranslationManager.getString("other")
+        firstNameMinLengthText = TranslationManager.getString("first_name_min_length")
+        lastNameMinLengthText = TranslationManager.getString("last_name_min_length")
+        userExistsText = TranslationManager.getString("user_exists")
     }
 
     /**
@@ -143,7 +150,8 @@ fun RegisterScreen(navController: NavHostController? = null) {
         gender: String,
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        existingUsers: List<String>
     ): String? {
 
         /**
@@ -153,6 +161,17 @@ fun RegisterScreen(navController: NavHostController? = null) {
             gender.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()
         ) {
             return fieldsRequiredText
+        }
+
+        /**
+         * Verificar longitud mínima del nombre y apellido (al menos 2 caracteres).
+         */
+        if (firstName.length < 2) {
+            return firstNameMinLengthText
+        }
+
+        if (lastName.length < 2) {
+            return lastNameMinLengthText
         }
 
         /**
@@ -193,6 +212,13 @@ fun RegisterScreen(navController: NavHostController? = null) {
         val emailRegex = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")
         if (!email.matches(emailRegex)) {
             return invalidEmailText
+        }
+
+        /**
+         * Verificar si el usuario ya existe.
+         */
+        if (existingUsers.contains(email)) {
+            return userExistsText
         }
 
         /**
@@ -672,7 +698,7 @@ fun RegisterScreen(navController: NavHostController? = null) {
                  */
                 Button(
                     onClick = {
-                        // Validación de los campos antes de enviar la solicitud de registro
+                        // Primero, validamos todos los campos
                         val error = validarRegistro(
                             firstName,
                             lastName,
@@ -680,39 +706,53 @@ fun RegisterScreen(navController: NavHostController? = null) {
                             selectedGender,
                             email,
                             password,
-                            confirmPassword
+                            confirmPassword,
+                            emptyList()
                         )
 
+                        // Si hay un error, mostramos el mensaje y salimos del bloque onClick
                         if (error != null) {
-                            // Muestra un Toast con el mensaje de error
                             Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-                        } else {
-                            // Crea la solicitud de registro
-                            val request = RegisterRequest(
-                                firstName = firstName,
-                                lastName = lastName,
-                                birthDate = birthDate,
-                                gender = selectedGender,
-                                email = email,
-                                password = password
-                            )
-
-                            // Envía la solicitud al ViewModel
-                            userViewModel.registerUser(
-                                request = request,
-                                onSuccess = {
-                                    // Navegar a la pantalla de éxito
-                                    navController?.navigate("registration_success") {
-                                        popUpTo("register") { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                },
-                                onFailure = { errorMsg ->
-                                    // Muestra un Toast con el mensaje de error del servidor
-                                    Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
-                                }
-                            )
+                            return@Button
                         }
+
+                        // Verificar si el usuario ya existe
+                        userViewModel.checkUserExists(
+                            email = email,
+                            onResult = { userExists ->
+                                if (userExists) {
+                                    // Mostrar mensaje de usuario existente
+                                    Toast.makeText(context, userExistsText, Toast.LENGTH_SHORT).show()
+                                } else {
+                                    // Crea la solicitud de registro
+                                    val request = RegisterRequest(
+                                        firstName = firstName,
+                                        lastName = lastName,
+                                        birthDate = birthDate,
+                                        gender = selectedGender,
+                                        email = email,
+                                        password = password
+                                    )
+
+                                    // Envía la solicitud al ViewModel
+                                    userViewModel.registerUser(
+                                        request = request,
+                                        onSuccess = {
+                                            navController?.navigate("registration_success") {
+                                                popUpTo("register") { inclusive = true }
+                                                launchSingleTop = true
+                                            }
+                                        },
+                                        onFailure = { errorMsg ->
+                                            Toast.makeText(context, errorMsg, Toast.LENGTH_LONG).show()
+                                        }
+                                    )
+                                }
+                            },
+                            onError = { errorMsg ->
+                                Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+                            }
+                        )
                     },
                     modifier = Modifier
                         .fillMaxWidth()

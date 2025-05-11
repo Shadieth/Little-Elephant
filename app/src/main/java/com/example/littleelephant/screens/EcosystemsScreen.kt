@@ -136,8 +136,8 @@ fun EcosystemsScreen(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { navController.navigate(AppScreens.PreferencesScreen.route) }) {
-                        Icon(Icons.Default.AccountCircle, contentDescription = "Ajustes", tint = Color.White)
+                    IconButton(onClick = { navController.navigate(AppScreens.ProfileScreen.route) }) {
+                        Icon(Icons.Default.AccountCircle, contentDescription = "Perfil", tint = Color.White)
                     }
 
                     Spacer(modifier = Modifier.width(16.dp))

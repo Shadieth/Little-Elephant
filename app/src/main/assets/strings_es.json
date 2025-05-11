@@ -15,7 +15,7 @@
   "login_error": "Usuario/contraseña incorrectos o usuario inexistente",
   "spanish_text": "Español \uD83C\uDDEA\uD83C\uDDF8",
   "english_text": "Inglés \uD83C\uDDFA\uD83C\uDDF8",
-  "preferences_title": "Preferencias",
+  "profile_title": "Mi Perfil",
   "first_name": "Nombre",
   "last_name": "Apellido",
   "birth_date": "Fecha de Nacimiento (AAAA-MM-DD)",
@@ -76,5 +76,8 @@
   "male": "Masculino",
   "female": "Femenino",
   "other": "Otro",
-  "update_success": "Perfil actualizado correctamente ✅"
+  "update_success": "Perfil actualizado correctamente ✅",
+  "first_name_min_length": "El nombre debe tener al menos 2 caracteres.",
+  "last_name_min_length": "El apellido debe tener al menos 2 caracteres.",
+  "user_exists": "El usuario ya está registrado."
 }

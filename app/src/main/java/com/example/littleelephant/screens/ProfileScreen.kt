@@ -38,7 +38,7 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferencesScreen(
+fun ProfileScreen(
     navController: NavHostController? = null,
     viewModel: UserViewModel = viewModel()
 ) {
@@ -65,7 +65,7 @@ fun PreferencesScreen(
     // --- VARIABLES MUTABLES PARA LOS TEXTOS (TRADUCCIÓN) ---
 
     // Títulos y etiquetas
-    var titleText by remember { mutableStateOf(TranslationManager.getString("preferences_title")) }
+    var titleText by remember { mutableStateOf(TranslationManager.getString("profile_title")) }
     var firstNameText by remember { mutableStateOf(TranslationManager.getString("first_name")) }
     var lastNameText by remember { mutableStateOf(TranslationManager.getString("last_name")) }
     var birthDateText by remember { mutableStateOf(TranslationManager.getString("birth_date")) }
@@ -109,7 +109,7 @@ fun PreferencesScreen(
      * Función para actualizar los textos según el idioma seleccionado.
      */
     fun updateTexts() {
-        titleText = TranslationManager.getString("preferences_title")
+        titleText = TranslationManager.getString("profile_title")
         firstNameText = TranslationManager.getString("first_name")
         lastNameText = TranslationManager.getString("last_name")
         birthDateText = TranslationManager.getString("birth_date")

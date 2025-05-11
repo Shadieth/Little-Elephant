@@ -7,11 +7,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.littleelephant.screens.EcosystemsScreen
 import com.example.littleelephant.screens.LoginScreen
-import com.example.littleelephant.screens.PreferencesScreen
 import com.example.littleelephant.screens.QuestionFlowScreen
 import com.example.littleelephant.screens.RegisterScreen
 import com.example.littleelephant.screens.ProgressScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.littleelephant.screens.ProfileScreen
 
 @Composable
 fun AppNavigation() {
@@ -26,8 +26,8 @@ fun AppNavigation() {
         composable(AppScreens.RegisterScreen.route) {
             RegisterScreen(navController)
         }
-        composable(AppScreens.PreferencesScreen.route) {
-            PreferencesScreen(navController)
+        composable(AppScreens.ProfileScreen.route) {
+            ProfileScreen(navController)
         }
         composable(AppScreens.RegistrationSuccess.route) {
             RegistrationSuccessScreen(navController)
