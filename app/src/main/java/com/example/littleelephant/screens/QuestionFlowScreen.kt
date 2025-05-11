@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -20,11 +21,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.example.littleelephant.R
 import com.example.littleelephant.apiRest.EcosystemViewModel
 import com.example.littleelephant.apiRest.Question
+import com.example.littleelephant.data.TranslationManager
+import com.example.littleelephant.data.dataStore
 import com.example.littleelephant.naviagtion.UserSessionManager
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun QuestionFlowScreen(
@@ -32,26 +37,54 @@ fun QuestionFlowScreen(
     ecosystemName: String,
     viewModel: EcosystemViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
+
+    val context = LocalContext.current
+
+    // --- VARIABLES DE TEXTO (TRADUCCIÓN) ---
+    // Variables mutables para los textos traducidos
+    var ecosystemNotFoundText by remember { mutableStateOf(TranslationManager.getString("ecosystem_not_found")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        ecosystemNotFoundText = TranslationManager.getString("ecosystem_not_found")
+    }
+
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
+
     var hasWrongAnswer by remember { mutableStateOf(false) }
     var currentIndex by remember { mutableIntStateOf(0) }
     var hasUnlockedNext by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
     val ecosystems = viewModel.ecosystems.value
     val unlockedLevels = viewModel.unlockedLevels.value
 
     val ecosystem = ecosystems.find { it.name == ecosystemName }
     val currentIndexInList = ecosystems.indexOfFirst { it.name == ecosystemName }
 
+    /**
+     * Si el ecosistema no se encuentra, muestra el texto traducido.
+     */
     if (ecosystem == null) {
         Text(
-            text = "Ecosistema no encontrado",
+            text = ecosystemNotFoundText,
             modifier = Modifier.padding(32.dp),
             style = MaterialTheme.typography.bodyLarge
         )
         return
     }
 
+    /**
+     * Si hay preguntas pendientes, muestra la pantalla de preguntas.
+     */
     if (currentIndex < ecosystem.questions.size) {
         val currentQuestion: Question = ecosystem.questions[currentIndex]
         key(currentQuestion) {
@@ -62,7 +95,11 @@ fun QuestionFlowScreen(
                 onWrongAnswer = { hasWrongAnswer = true }
             )
         }
-    } else {
+    }
+    /**
+     * Si no hay preguntas pendientes, muestra la pantalla de finalización o la pantalla de reintento.
+     */
+    else {
         if (hasWrongAnswer) {
             RetryScreen(
                 onRetry = {
@@ -77,8 +114,11 @@ fun QuestionFlowScreen(
             LaunchedEffect(Unit) {
                 val nextLevel = currentIndexInList + 1
                 val email = UserSessionManager.getEmail(context)
-                if (
-                    email != null &&
+
+                /**
+                 * Desbloquear el siguiente nivel si existe y no está desbloqueado.
+                 */
+                if (email != null &&
                     nextLevel < ecosystems.size &&
                     (nextLevel + 1) !in unlockedLevels &&
                     !hasUnlockedNext
@@ -88,6 +128,10 @@ fun QuestionFlowScreen(
                 }
             }
 
+            /**
+             * Si se ha completado el último ecosistema, muestra la pantalla de felicitaciones.
+             * De lo contrario, muestra la pantalla de finalización.
+             */
             if (currentIndexInList == ecosystems.lastIndex) {
                 CongratulationsScreen(onBackToHome = { navController.popBackStack() })
             } else {
@@ -99,6 +143,31 @@ fun QuestionFlowScreen(
 
 @Composable
 fun FinishedScreen(onBackToLevels: () -> Unit) {
+
+    val context = LocalContext.current
+
+    // --- VARIABLES DE TEXTO (TRADUCCIÓN) ---
+    var completedEcosystemText by remember { mutableStateOf(TranslationManager.getString("completed_ecosystem")) }
+    var backToLevelsText by remember { mutableStateOf(TranslationManager.getString("back_to_levels")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        completedEcosystemText = TranslationManager.getString("completed_ecosystem")
+        backToLevelsText = TranslationManager.getString("back_to_levels")
+    }
+
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
+
+    // Fondo degradado
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(
             Color(0xFFE1F5FE),
@@ -118,19 +187,23 @@ fun FinishedScreen(onBackToLevels: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+
+            // Imagen decorativa
             Image(
                 painter = painterResource(id = R.drawable.elefanterey),
-                contentDescription = "Ecosistema completado",
+                contentDescription = completedEcosystemText,
                 modifier = Modifier.size(250.dp),
                 contentScale = ContentScale.Fit
             )
 
+            // Texto de felicitación
             Text(
-                text = "¡Has completado este ecosistema!",
+                text = completedEcosystemText,
                 style = MaterialTheme.typography.headlineSmall,
                 textAlign = TextAlign.Center
             )
 
+            // Botón para volver a los ecosistemas
             Button(
                 onClick = onBackToLevels,
                 modifier = Modifier
@@ -152,7 +225,7 @@ fun FinishedScreen(onBackToLevels: () -> Unit) {
                 )
             ) {
                 Text(
-                    text = "Volver a los ecosistemas",
+                    text = backToLevelsText,
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -177,18 +250,45 @@ fun RetryScreen(
     onRetry: () -> Unit,
     onBackToLevels: () -> Unit
 ) {
+
+    val context = LocalContext.current
+
+    // --- VARIABLES DE TEXTO (TRADUCCIÓN) ---
+    var retryText by remember { mutableStateOf(TranslationManager.getString("retry")) }
+    var backToLevelsText by remember { mutableStateOf(TranslationManager.getString("back_to_levels")) }
+    var incorrectAnswerText by remember { mutableStateOf(TranslationManager.getString("incorrect_answer")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        retryText = TranslationManager.getString("retry")
+        backToLevelsText = TranslationManager.getString("back_to_levels")
+        incorrectAnswerText = TranslationManager.getString("incorrect_answer")
+    }
+
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
+
+    // Fondo degradado
+    val backgroundBrush = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFFFFEBEE),
+            Color(0xFFFCE4EC),
+            Color(0xFFF8BBD0)
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color(0xFFFFEBEE),
-                        Color(0xFFFCE4EC),
-                        Color(0xFFF8BBD0)
-                    )
-                )
-            )
+            .background(brush = backgroundBrush)
             .padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -196,16 +296,18 @@ fun RetryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+
             // Imagen decorativa
             Image(
-                painter = painterResource(id = R.drawable.elefantemolesto), // 🐘 Usa tu imagen real aquí
-                contentDescription = "Respuesta incorrecta",
+                painter = painterResource(id = R.drawable.elefantemolesto),
+                contentDescription = incorrectAnswerText,
                 modifier = Modifier.size(250.dp),
                 contentScale = ContentScale.Fit
             )
 
+            // Texto de respuesta incorrecta
             Text(
-                text = "❌ Debes responder correctamente todas las preguntas.",
+                text = incorrectAnswerText,
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold
                 ),
@@ -222,39 +324,8 @@ fun RetryScreen(
                     .shadow(4.dp, shape = RoundedCornerShape(50), clip = true)
                     .background(
                         brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45)) // tonos azul blush aesthetic
+                            colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45))
                         ),
-                        shape = RoundedCornerShape(50)
-                    ),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.Transparent, // lo deja transparente para mostrar el brush
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Reintentar",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                )
-            }
-
-
-            // Botón Volver a los ecosistemas
-            val blueBlushBrush = Brush.horizontalGradient(
-                colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45)) // tonos azules aesthetic
-            )
-
-            Button(
-                onClick = onBackToLevels,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true)
-                    .background(
-                        brush = blueBlushBrush,
                         shape = RoundedCornerShape(50)
                     ),
                 colors = ButtonDefaults.buttonColors(
@@ -263,7 +334,7 @@ fun RetryScreen(
                 )
             ) {
                 Text(
-                    text = "Volver a los ecosistemas",
+                    text = retryText,
                     style = TextStyle(
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -272,10 +343,36 @@ fun RetryScreen(
                 )
             }
 
+            // Botón Volver a los ecosistemas
+            Button(
+                onClick = onBackToLevels,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
+                    .shadow(4.dp, shape = RoundedCornerShape(50), clip = true)
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(Color(0xFFC41B1B), Color(0xFFC41B45))
+                        ),
+                        shape = RoundedCornerShape(50)
+                    ),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Transparent,
+                    contentColor = Color.White
+                )
+            ) {
+                Text(
+                    text = backToLevelsText,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                )
+            }
         }
     }
 }
-
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable

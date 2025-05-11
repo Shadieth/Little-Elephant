@@ -2,27 +2,20 @@ package com.example.littleelephant.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,10 +23,43 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.littleelephant.R
+import com.example.littleelephant.data.TranslationManager
+import com.example.littleelephant.data.dataStore
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun CongratulationsScreen(onBackToHome: () -> Unit) {
+
+    val context = LocalContext.current
+
+    // Variables mutables para los textos que se actualizan al cambiar el idioma.
+    var titleText by remember { mutableStateOf(TranslationManager.getString("congrats_title")) }
+    var messageText by remember { mutableStateOf(TranslationManager.getString("congrats_message")) }
+    var backHomeText by remember { mutableStateOf(TranslationManager.getString("back_home")) }
+
+    /**
+     * Función para actualizar los textos según el idioma seleccionado.
+     */
+    fun updateTexts() {
+        titleText = TranslationManager.getString("congrats_title")
+        messageText = TranslationManager.getString("congrats_message")
+        backHomeText = TranslationManager.getString("back_home")
+    }
+
+    /**
+     * Cargar el idioma inicial al entrar a la pantalla.
+     */
+    LaunchedEffect(Unit) {
+        val lang = context.dataStore.data.first()[stringPreferencesKey("language")] ?: "es"
+        TranslationManager.loadLanguage(context, lang)
+        updateTexts()
+    }
+
+    /**
+     * Fondo degradado de la pantalla.
+     */
     val backgroundBrush = Brush.verticalGradient(
         colors = listOf(
             Color(0xFFE0F7FA), // azul agua claro
@@ -42,6 +68,9 @@ fun CongratulationsScreen(onBackToHome: () -> Unit) {
         )
     )
 
+    /**
+     * Degradado del botón.
+     */
     val buttonGradient = Brush.horizontalGradient(
         colors = listOf(
             Color(0xFF5C5D83), // azul lavanda profundo
@@ -49,6 +78,7 @@ fun CongratulationsScreen(onBackToHome: () -> Unit) {
         )
     )
 
+    // Estructura de la pantalla
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -60,26 +90,30 @@ fun CongratulationsScreen(onBackToHome: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+
+            // Imagen de felicitaciones
             Image(
                 painter = painterResource(id = R.drawable.elefanteconglobo),
                 contentDescription = "Felicitaciones",
-                modifier = Modifier
-                    .size(300.dp),
+                modifier = Modifier.size(300.dp),
                 contentScale = ContentScale.Fit
             )
 
+            // Título de felicitación
             Text(
-                text = "🎉 ¡Felicidades!",
+                text = titleText,
                 style = MaterialTheme.typography.headlineLarge,
-                color = Color(0xFF4A148C) // púrpura elegante y vibrante
+                color = Color(0xFF4A148C)
             )
 
+            // Mensaje de felicitación
             Text(
-                text = "Has completado todos los ecosistemas 🌎",
+                text = messageText,
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center
             )
 
+            // Botón "Volver a inicio"
             Button(
                 onClick = onBackToHome,
                 modifier = Modifier
@@ -102,7 +136,7 @@ fun CongratulationsScreen(onBackToHome: () -> Unit) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Volver al inicio",
+                        text = backHomeText,
                         style = TextStyle(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
@@ -118,9 +152,7 @@ fun CongratulationsScreen(onBackToHome: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun CongratulationsScreenPreview() {
-    MaterialTheme {
-        CongratulationsScreen(onBackToHome = {})
-    }
+    CongratulationsScreen(onBackToHome = {})
 }
 
 
