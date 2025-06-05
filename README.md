@@ -37,11 +37,45 @@
 
 A continuación se muestran algunas de las pantallas clave diseñadas en la aplicación:
 
-<img src="images/crearCuenta.png" alt="Crear cuenta" width="300"/>
-<img src="images/crearCuenta1.png" alt="Crear cuenta con botón visible" width="300"/>
-<img src="images/niveles.png" alt="Pantalla de ecosistemas" width="300"/>
-<img src="images/progreso.png" alt="Pantalla de progreso" width="300"/>
-<img src="images/perfil.png" alt="Pantalla de perfil" width="300"/>
+<p align="center">
+  <img src="images/favicon.png" alt="Icono app" width="300"/>
+  <img src="images/LoginScreen.png" alt="Pantalla de login" width="300"/>
+  <img src="images/RegisterScreen.png" alt="Registro" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/RegisterScreen2.png" alt="Registro con validación" width="300"/>
+  <img src="images/ValidacionErrorScreen.png" alt="Errores de validación" width="300"/>
+   <img src="images/RegistrationSucessScreen.png" alt="Registro exitoso" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/EcosystemScreenUnlock1.png" alt="Primer ecosistema desbloqueado" width="300"/>
+  <img src="images/EcosystemsScreen.png" alt="Lista de ecosistemas" width="300"/>
+  <img src="images/EcosystemScreenLanguage.png" alt="Pantalla con idioma" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/QuestionScreen1.png" alt="Pregunta 1" width="300"/>
+  <img src="images/QuestionScreen2.png" alt="Pregunta 2" width="300"/>
+  <img src="images/QuestionScreen3.png" alt="Pregunta 3" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/RetryScreen.png" alt="Pantalla de reintento" width="300"/>
+  <img src="images/FinishedScreen.png" alt="Pantalla de finalización" width="300"/>
+  <img src="images/CongratsScreen.png" alt="Pantalla de felicitación" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/ProgressScreen.png" alt="Progreso del usuario" width="300"/>
+  <img src="images/ProgressScreenComplete.png" alt="Progreso completo" width="300"/>
+  <img src="images/ProfileScreen.png" alt="Perfil del usuario" width="300"/>
+</p>
+
+<p align="center">
+  <img src="images/ProfileScreen2.png" alt="Edición de perfil" width="300"/>
+</p>
 
 ## Requisitos Previos
 
