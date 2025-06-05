@@ -1,53 +1,53 @@
-# Little Elephant
+# Little Elephant - Frontend
 
-## Descripción del Proyecto
+## Descripción
 
-El proyecto consiste en el desarrollo de una aplicación móvil llamada **Little Elephant**, diseñada para el aprendizaje del inglés en niños con un enfoque en el vocabulario. La estructura de aprendizaje está inspirada en el modelo de **Duolingo**, donde los usuarios deberán desbloquear niveles progresivamente a medida que avanzan.
+**Little Elephant** es una aplicación educativa Android diseñada para el aprendizaje de vocabulario en inglés para niños mayores de 5 años. A través de la exploración de ecosistemas temáticos (como Granja, Océano o Jungla), los usuarios interactúan con imágenes, sonidos y preguntas dinámicas. La app se desarrolla con **Jetpack Compose** y está conectada a un backend REST desacoplado y escalable.
 
-Inicialmente, la aplicación será exclusiva para dispositivos **Android**, con una interfaz desarrollada en **Android Studio**. Sin embargo, el **backend** se implementará de forma independiente para facilitar su integración con otras interfaces en el futuro, permitiendo una versión web y garantizando un sistema modular y escalable.
+## Funcionalidades del Frontend
 
-Además, la aplicación estará disponible en **español e inglés** para mejorar la accesibilidad a usuarios con distintos niveles de conocimiento. También se integrará con la API de **Google Sign-In** para gestionar el inicio de sesión en Android. La administración de usuarios y niveles se manejará mediante una base de datos.
+- Registro y login con validaciones integradas.
+- Exploración y desbloqueo progresivo de ecosistemas educativos.
+- Pantalla de preguntas con retroalimentación visual y sonora.
+- Progreso visual del usuario con animaciones.
+- Gestión del perfil: edición de datos y eliminación de cuenta.
+- Sistema de traducción en tiempo real (español/inglés) persistente.
+- Lógica dinámica de desbloqueo solo si se responden correctamente todas las preguntas.
+- Pantalla de felicitación final si se completa el último ecosistema.
 
-<img src="images/portada.png" alt="Portada" width="300"/>
+## Tecnologías
 
-## Alcance
+- **Lenguaje:** Kotlin
+- **Framework:** Jetpack Compose
+- **Persistencia local:** DataStore (idioma)
+- **Consumo API:** Retrofit
+- **Gestión de estado:** ViewModel
+- **Audio:** MediaPlayer
+- **Traducción dinámica:** Archivos JSON (`strings_es.json`, `strings_en.json`)
 
-- Desarrollo de una interfaz gráfica intuitiva y atractiva.
-- Backend modular y escalable.
-- Integración con APIs externas para funcionalidades adicionales.
-- Implementación de **cinco niveles iniciales**.
-- Disponibilidad en **español e inglés**.
+## Estructura Destacada
 
-## Resumen de Funcionalidades
+- `QuestionFlowScreen.kt`: flujo de preguntas, validación y desbloqueo.
+- `ProgressScreen.kt`: cálculo del avance general del usuario.
+- `ProfileScreen.kt`: gestión de datos del usuario.
+- `ApiService.kt`: define todos los endpoints de conexión al backend.
+- `TranslationManager.kt` & `DataStoreManager.kt`: sistema multilingüe persistente.
 
-- Registro e inicio de sesión con **Google Sign-In** o mediante datos manuales.
-- Visualización de imágenes con selección de la palabra correcta en inglés.
-- Reproducción de sonidos para mejorar la pronunciación.
-- Seguimiento del progreso del usuario.
-- Interfaz adaptada para niños, con diseño amigable y colores llamativos.
-- Escalabilidad para agregar nuevos niveles y funcionalidades.
-- Opción para cambiar el idioma de la aplicación.
+## Pantallas Diseñadas
+
+A continuación se muestran algunas de las pantallas clave diseñadas en la aplicación:
 
 <img src="images/crearCuenta.png" alt="Crear cuenta" width="300"/>
-
 <img src="images/crearCuenta1.png" alt="Crear cuenta con botón visible" width="300"/>
+<img src="images/niveles.png" alt="Pantalla de ecosistemas" width="300"/>
+<img src="images/progreso.png" alt="Pantalla de progreso" width="300"/>
+<img src="images/perfil.png" alt="Pantalla de perfil" width="300"/>
 
-## Tecnologías a Utilizar
+## Requisitos Previos
 
-- **Frontend**: Android Studio con **Jetpack Compose**.
-- **Backend**: Node.js con **NestJS** y **TypeScript**.
-- **Base de Datos**: **MongoDB**.
-- **Autenticación**: Integración con **Google Sign-In**.
-- **Servicios Externos**: APIs para generación de sonidos.
-- **Infraestructura**: Arquitectura escalable y modular para futuras ampliaciones.
-
-<img src="images/niveles.png" alt="Pantalla de niveles" width="300"/>
-
-## Estado Actual
-
-- **Frontend**: Actualmente, el frontend de la aplicación está completamente desarrollado con **Jetpack Compose**.
-- **Backend**: Se está implementando con **Node.js y NestJS**.
-- **Base de Datos**: Uso de **MongoDB** para almacenar información de usuarios y progreso.
+- Android Studio Arctic Fox o superior.
+- Dispositivo o emulador Android API 26+.
+- Conexión activa al backend desplegado.
 
 ## Instalación
 
