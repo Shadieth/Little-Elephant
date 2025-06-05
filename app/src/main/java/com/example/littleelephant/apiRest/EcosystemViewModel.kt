@@ -77,7 +77,6 @@ class EcosystemViewModel : ViewModel() {
             }
         }
     }
-
 }
 
 
